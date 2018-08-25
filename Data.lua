@@ -1,0 +1,86 @@
+
+--[questId]=repID
+--[questId]={repID1, repID2} if multiple rep rewards
+
+--Rep total initialization and ID indices
+CoA = 0; --Champions of Azeroth rep (ID = 2164)
+TE = 0;  --Talanji's Expedition rep (ID = 2156)
+HB = 0;  --The Honorbound rep 		(ID = 2157)
+TS = 0;  --Tortollan Seekers rep 	(ID = 2163)
+Vol = 0; --Voldunai rep				(ID = 2158)
+ZE = 0;  --Zandalari Empire rep 	(ID = 2103)
+
+--Scout Skrasniss quest has ID 50512 and gives 75 rep for Talanji (repID 2156)
+--Kiboku quest has ID 50869 and gives 75 rep for Zandalari Empire (repID 2103)
+--Scrolls and Scales has ID 50581 and gives 75 rep for Zandalari Empire (repID 2103)
+--Lo'kuno has ID 50509 and gives 75 rep for Talanji (repID 2156)
+local worldQuestReps = {[50512]=2156, [50869]=2103, [50581]=2103, [50509]=2156}
+
+for q, r in pairs(worldQuestReps) do
+	--quest with ID "q" has been completed today
+	if(IsQuestFlaggedCompleted(q)) then
+		print(GetQuestLink(q), " has been completed");
+	else
+		print(GetQuestLink(q), " has NOT been completed");
+		
+		if(r == 2164) then
+			CoA = CoA + 125;
+		elseif(r == 2156) then
+			TE = TE + 75;
+		elseif(r == 2157) then
+			HB = HB + 75;
+		elseif(r == 2163) then
+			TS = TS + 75;
+		elseif(r == 2158) then
+			Vol = Vol + 75;
+		elseif(r == 2103) then
+			ZE = ZE + 75;
+		else
+			print("ERROR, INVALID REP ID");
+		end
+	end
+	
+	
+	--*****Not sure where I was going with this, but I feel like it's relevant to seeing if the quest is currently "active"
+	-- if(HaveQuestData(q)) then
+		-- print("I apparently have quest data for: ", GetQuestLink(q));
+	-- else 
+		-- print("I DO NOT have quest data for: ", GetQuestLink(q));
+	-- end
+end
+--print("KIBOKU: ", IsQuestFlaggedCompleted(50869));
+
+
+
+function OutputRepSums()
+	if(CoA > 0) then
+		print("Champions of Azeroth potential rep: ", CoA);
+	end
+	if(TE > 0) then
+		print("Talanji's Expedition potential rep: ", TE);
+	end
+	if(HB > 0) then
+		print("The Honorbound potential rep: ", HB);
+	end
+	if(TS > 0) then
+		print("Tortollan Seekers potential rep: ", TS);
+	end
+	if(Vol > 0) then
+		print("Voldunai potential rep: ", Vol);
+	end
+	if(ZE > 0) then
+		print("Zandalari Empire potential rep: ", ZE);
+	end
+end
+
+
+
+
+OutputRepSums();
+
+
+
+
+
+
+
