@@ -4,6 +4,14 @@
 
 print("WQ Report active! Will only work for Horde to begin");
 
+playerFaction = UnitFactionGroup("player");
+
+if(playerFaction == "Horde") then
+	print("CHARACTER CONFIRMED HORDE, ZUG ZUG");
+else
+	print("CHARACTER CONFIRMED ALLIANCE ....ew");
+end
+
 --Prints if quest is completed
 --[[
 print("KIBOKU: ", IsQuestFlaggedCompleted(50869));

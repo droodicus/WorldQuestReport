@@ -1,6 +1,6 @@
 ## Interface: 70200
 ## Title: WQ_Report
-## Author: Karl Olsen (Droodicus)
+## Author: Karl Olsen
 ## Version: 0.1
 
 main.lua
