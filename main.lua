@@ -26,6 +26,7 @@ end)
 
 print("WQ Report active!");
 
+
 --Counter for number of World Quests currently active
 numWQs = 0;
 
@@ -50,16 +51,121 @@ SW = 0; --Storm's Wake rep (ID = 2162)
 --Kiboku quest has ID 50869 and gives 75 rep for Zandalari Empire (repID 2103)
 --Scrolls and Scales has ID 50581 and gives 75 rep for Zandalari Empire (repID 2103)
 --Lo'kuno has ID 50509 and gives 75 rep for Talanji (repID 2156)
-local worldQuestReps = {[50512]=2156, [50869]=2103, [50581]=2103, [50509]=2156, [50592]=2103, [50877]=2103, [52858]={2103, 2159, 2164}, [50885]=2103, [52862]={2164, 2157}, [52862]={2164, 2161, 2157}, [52858]={2164, 2159, 2157}}
+--local worldQuestReps = {[50512]=2156, [50869]=2103, [50581]=2103, [50509]=2156, [50592]=2103, [50877]=2103, [52858]={2103, 2159, 2164}, [50885]=2103, [52862]={2164, 2157}, [52862]={2164, 2161, 2157}, [52858]={2164, 2159, 2157}}
+
+--7th Legion = , 2159
+local worldQuestReps = {
+--Zuldazar Quests
+[52923]={2103, 2159}, --Add More to the Collection -- Gives 75 ZE rep
+[49800]={2103, 2159}, --Atal'Dazar: Spiders! -- Gives 75 ZE rep
+[50864]={2103, 2159}, --Atal'Zul Gotaka  -- Gives 75 ZE rep ***
+[50863]={2103, 2159}, --Avatar of Xolotal -- Gives 75 ZE rep
+[52858]={2103, 2159, 2164}, --Azerite Empowerment(Hex Priest Haraka) -- Gives 125 CoA rep and 75 ZE rep 
+[51444]={2103, 2159, 2164}, --Azerite Empowerment(Zu'shin the Infused) -- Gives 125 CoA rep and 75  ZE rep
+[51179]={2103, 2159, 2164}, --Azerite Madness -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[52877]={2103, 2159, 2164}, --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[51450]={2103, 2159, 2164}, --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[52877]={2103, 2159, 2164}, --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[51175]={2103, 2159, 2164}, --Azerite Wounds -- Gives 125 CoA rep and 75  ZE rep
+[51642]={2103, 2159, 2163}, --Beachhead -- Gives 175 TS rep and 75 ZE rep (Southern coast of Zuldazar)
+[50527]={2103, 2159},		  --Behind Mogu Lines -- Gives 75 ZE rep **NOTE: According to wowhead, this is Alliance only
+[50652]={2103, 2159},		  --Biting The Hand that Feeds Them -- Give 75 ZE rep **NOTE: According to wowhead, this is Horde only
+[50862]={2103, 2159},		  --Bloodbulge -- gives 75 ZE rep
+[50868]={2103, 2159},		  --Bramblewing -- gives 75 ZE rep
+[50848]={2158, 2159},		  --Brgl-Lrgl the Basher *** says it's a Zuldazar quest despite being in Vol'dun, rep unconfirmed
+[50578]={2103, 2159},		  --Bring Ruin AGain -- gives 75 ZE rep
+[51475]={2103, 2159},		  --Brutal Escort -- gives 75 ZE rep
+[50966]={2103, 2159},		  --Cleanup Crew -- gives 75 ZE rep
+[52251]={2103, 2159},		  --Compromised Reconnaissance -- gives 75 ZE rep **no info whatsoever on wowhead page, doublecheck
+[50854]={2103, 2159},		  --Crimsonclaw (Umbra'jin) -- gives 75 ZE rep
+[52892]={2103, 2159},		  --Critters are Friends, Not Food -- gives 75 ZE rep
+[50651]={2103, 2159},		  --Cut Off Potential -- gives 75 ZE rep
+[50871]={2103, 2159},		  --Daggerjaw -- gives 75 ZE rep
+[51084]={2103, 2159},		  --Dark Chronicler -- gives 75 ZE rep
+[50875]={2103, 2159},		  --Darkspeaker Jo'la - gives 75 ZE rep
+[48862]={2103, 2159},		  --Disarming the Competetion -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[51373]={2103, 2159},		  --Ears Everywhere -- gives 75 ZE rep
+[51815]={2103, 2159},		  --Eggstermination -- gives 75 ZE rep  (Appears to be Alliance version)
+[50571]={2103, 2159},		  --Eggstermination -- gives 75 ZE rep (Appears to be Horde version)
+[50969]={2103, 2159},		  --Emergency Management -- gives 75 ZE rep **NOTE: According to wowhead, this is Alliance only
+[50548]={2103, 2159},		  --Enforcing the Will of the King -- gives 75 ZE rep **NOTE: According to wowhead, this is Horde only
+[50870]={2103, 2159},		  --G'Naat -- gives 75 ZE rep
+[50877]={2103, 2159},		  --Gahz'ralka -- gives 75 ZE rep
+[50857]={2103, 2159},		  --Golrakahn -- gives 75 ZE rep
+[50874]={2103, 2159},		  --Hakbi the Risen -- gives 75 ZE rep
+[50846]={2103, 2159},		  --Headhunter Lee'za -- gives 75 ZE rep
+[50765]={2103, 2159},		  --Herding Children -- gives 75 ZE rep
+[51497]={2103, 2159},		  --Hex Education -- gives 75 ZE rep
+[51178]={2103, 2159},		  --Hundred Troll Holdout -- gives 75 ZE rep
+[51305]={2103, 2159},		  --Jelly Clouds -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[50859]={2103, 2159},		  --Kandak -- gives 75 ZE rep
+[50869]={2103, 2159},		  --Kiboku -- gives 75 ZE rep
+[50547]={2103, 2159},		  --Knives of Zul -- gives 75 ZE rep
+[50845]={2103, 2159},		  --Kul'krazahn -- gives 75 ZE rep
+[50852]={2103, 2159},		  --Lady Seirine -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[50885]={2103, 2159},		  --Lei-zhi -- gives 75 ZE rep
+[51496]={2103, 2159},		  --Loa Your Standards -- gives 75 ZE rep
+[51636]={2103, 2159, 2163}, --Make Loh Go -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[50851]={2103, 2159},		  --Mor'fani the Exile *** says it's a Zuldazar quest despite being in Vol'dun, rep unconfirmed
+[50876]={2103, 2159},		  --Murderbeak -- gives 75 ZE rep
+[50747]={2103, 2159},		  --No Good Amani -- gives 75 ZE rep
+[50855]={2103, 2159},		  --Old R'gal -- gives 75 ZE rep
+[51495]={2103, 2159},		  --Old Rotana -- gives 75 ZE rep
+[50574]={2103, 2159},		  --Preservation Methods -- gives 75 ZE rep
+[51816]={2103, 2159},		  --Pterrible Ingredients -- gives 75 ZE rep, although wowhead says it's Alliance
+[50633]={2103, 2159},		  --Pterrible Ingredients -- appears to be a copy of the previous one? Might be unused, wowhead page is blank
+[50524]={2103, 2159},		  --Purify the Temple -- gives 75 ZE rep -- wowhead says Horde only
+[51821]={2103, 2159},		  --Quelling the Cove -- gives 75 ZE rep -- wowhead says Alliance only
+[49068]={2103, 2159},		  --Quelling the Cove -- gives 75 ZE rep -- appears to be Horde version
+[50540]={2103, 2159},		  --Rally the Rastari -- gives 75 ZE rep -- wowhead says Horde only
+[51814]={2103, 2159},		  --Ravoracious -- gives 75 ZE rep -- wowhead says Alliance only
+[50636]={2103, 2159},		  --Ravoracious -- gives 75 ZE rep -- appears to be Horde version
+[50744]={2103, 2159},		  --Refresh Their Memory -- gives 75 ZE rep -- wowhead says Horde only
+[50964]={2103, 2159},		  --Ritual Combat -- gives 75 ZE rep -- wowhead says Horde only
+[52250]={2103, 2159},		  --Saving Xibala -- gives 75 ZE rep -- wowhead says Alliance only
+[49413]={2103, 2159},		  --Scamps with Scrolls -- gives 75 ZE rep -- wowhead says Horde only
+[51822]={2103, 2159},		  --Scrolls and Scales -- gives 75 ZE rep -- wowhead says Alliance only
+[50581]={2103, 2159},		  --Scrolls and Scales -- gives 75 ZE rep -- wowhead says Horde only
+[51630]={2103, 2159, 2163}, --Shell Game -- gives 175 TS rep and 75 ZE rep - Southwestern Zuldazar
+[50737]={2103, 2159},		  --Silence the Speakers -- gives 75 ZE rep -- wowhead says Alliance only
+[50858]={2103, 2159},		  --Sky Queen -- gives 75 ZE rep -- wowhead says Alliance only
+[52938]={2103, 2159},		  --Small Beginnings -- gives 75 ZE rep -- pet battle (Zujai)
+[53165]={2103, 2159},		  --Stopping Antiquities Theft -- gives 75 ZE rep -- wowhead says Alliance only
+[50873]={2103, 2159},		  --Strange Egg -- gives 75 ZE rep
+[50756]={2103, 2159},		  --Subterranean Evacuation -- gives 75 ZE rep -- wowhead says Alliance only
+[51081]={2103, 2159},		  --Syrawon the Dominus -- gives 75 ZE rep
+[50867]={2103, 2159},		  --Tambano -- gives 75 ZE rep
+[51494]={2103, 2159},		  --The Blood Gate -- gives 75 ZE rep
+[52249]={2103, 2159},		  --The Shores of Xibala -- gives 75 ZE rep -- wowhead says Alliance only
+[52248]={2103, 2159},		  --The Shores of Xibala -- gives 75 ZE rep -- wowhead says Horde only
+[50850]={2103, 2159},		  --Tia'Kawan -- gives 75 ZE rep
+[50592]={2103, 2159},		  --Tiny Terror -- gives 75 ZE rep -- wowhead says Horde only
+[50861]={2103, 2159},		  --Torraske the Eternal -- gives 75 ZE rep
+[50847]={2103, 2159},		  --Twisted Child of Rezan -- gives 75 ZE rep
+[50853]={2103, 2159},		  --Umbra'rix -- gives 75 ZE rep
+[49444]={2103, 2159},		  --Underfoot -- gives 75 ZE rep -- wowhead says Horde only
+[50287]={2103, 2159},		  --Unending Gorilla Warfare -- gives 75 ZE rep -- wowhead says Horde only
+[51374]={2103, 2159},		  --Unending Gorilla Warfare -- gives 75 ZE rep -- wowhead says Alliance only
+[50872]={2103, 2159},		  --Warcrawler Karkithiss -- gives 75 ZE rep
+[50619]={2103, 2159},		  --What Goes Up -- gives 75 ZE rep -- wowhead says Horde only
+[50849]={2103, 2159},		  --Witch Doctor Habra'du -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[50782]={2103, 2159},		  --Word on the Streets -- gives 75 ZE rep -- wowhead says Alliance only
+[50957]={2103, 2159},		  --Wrath of Rezan -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[51824]={2103, 2159},		  --You're Grounded -- gives 75 ZE rep -- wowhead says Alliance only
+[52937]={2103, 2159},		  --You've Never Seen Jammer Upset -- gives 75 ZE rep -- pet battle (Jammer)
+[50866]={2103, 2159}		  --Zayoos -- gives 75 ZE rep
+}
 
 
 function ParseHordeWQs()
 	for q, r in pairs(worldQuestReps) do
 		if(GetQuestLink(q) ~= nil) then
-			if(IsQuestFlaggedCompleted(q)) then
+			--if(IsQuestFlaggedCompleted(q)) then
+			if(IsQuestComplete(q)) then
 				print(GetQuestLink(q), " has been completed");
 			else
-				if(C_TaskQuest.IsActive(q)) then
+				--if(C_TaskQuest.IsActive(q) and C_TaskQuest.GetQuestTimeLeftMinutes(q) > 0) then
+				if(C_TaskQuest.GetQuestTimeLeftMinutes(q) > 0) then
 					print(GetQuestLink(q), " IS A VALID WQ");
 					numWQs = numWQs + 1;
 					--if a WQ gives rep for multiple factions, call AddHordeRepToSum for each of them
@@ -67,17 +173,18 @@ function ParseHordeWQs()
 						for k, v in pairs(r) do
 							AddHordeRepToSum(v);
 						end
-						print(GetQuestLink(q), " gives rep for multiple factions");
+						--print(GetQuestLink(q), " gives rep for multiple factions");
 					else
 					--if a WQ gives rep for one faction, just call AddHordeRepToSum for it
 						AddHordeRepToSum(r);
 					end
 				else
-					print(GetQuestLink(q), " is NOT available at the moment");
+					--print(GetQuestLink(q), " is NOT available at the moment");
 				end;
 			end
 		end
 	end
+	
 	contract_rep = numWQs * 10;
 end
 
@@ -95,8 +202,8 @@ function AddHordeRepToSum(re)
 		Vol = Vol + 75;
 	elseif(re == 2103) then
 		ZE = ZE + 75;
-	else
-		print(re, "'s reputation does not apply");
+	--else
+		--print(re, "'s reputation does not apply");
 	end
 end
 
@@ -115,7 +222,7 @@ function OutputHordeRepSums()
 		print("Tortollan Seekers potential rep: ", TS);
 	end
 	if(Vol > 0) then
-		print("Voldunai potential contract rep: ", Vol);
+		print("Voldunai potential rep: ", Vol);
 	end
 	if(ZE > 0) then
 		print("Zandalari Empire potential rep: ", ZE);
@@ -137,13 +244,13 @@ function ParseAllianceWQs()
 						for k, v in pairs(r) do
 							AddAllianceRepToSum(v);
 						end
-						print(GetQuestLink(q), " gives rep for multiple factions");
+						--print(GetQuestLink(q), " gives rep for multiple factions");
 					else
 					--if a WQ gives rep for one faction, just call AddAllianceRepToSum for it
 						AddAllianceRepToSum(r);
 					end
-				else
-					print(GetQuestLink(q), " is NOT available at the moment");
+				--else
+					--print(GetQuestLink(q), " is NOT available at the moment");
 				end;
 			end
 		end
@@ -165,8 +272,8 @@ function AddAllianceRepToSum(re)
 		PA = PA + 75;
 	elseif(re == 2162) then
 		SW = SW + 75;
-	else
-		print(re, "'s reputation does not apply");
+	--else
+	--	print(re, "'s reputation does not apply");
 	end
 end
 
