@@ -7,18 +7,22 @@ f:RegisterEvent("PLAYER_LOGIN")
 
 f:SetScript("OnEvent", function(f, event)
     if event == "PLAYER_LOGIN" then
-		if(UnitFactionGroup("player") == "Horde") then
-			print("CHARACTER CONFIRMED HORDE, ZUG ZUG");
-			ParseHordeWQs();
-			CheckContracts();
-			OutputHordeRepSums();
-			print("Num WQs active :", numWQs);
-		elseif(UnitFactionGroup("player") == "Alliance") then
-			print("CHARACTER CONFIRMED ALLIANCE ....ew");
-			ParseAllianceWQs();
-			CheckContracts();
-			OutputAllianceRepSums();
-			print("Num WQs active :", numWQs);
+		if(UnitLevel("player") == 120) then
+			if(UnitFactionGroup("player") == "Horde") then
+				print("CHARACTER CONFIRMED HORDE, ZUG ZUG");
+				ParseHordeWQs();
+				CheckContracts();
+				OutputHordeRepSums();
+				print("Num WQs active :", numWQs);
+			elseif(UnitFactionGroup("player") == "Alliance") then
+				print("CHARACTER CONFIRMED ALLIANCE ....ew");
+				ParseAllianceWQs();
+				CheckContracts();
+				OutputAllianceRepSums();
+				print("Num WQs active :", numWQs);
+			end
+		else
+			print("Level up scrub");
 		end
     end
 end)
@@ -39,10 +43,10 @@ Vol = 0; --Voldunai rep				(ID = 2158)
 ZE = 0;  --Zandalari Empire rep 	(ID = 2103)
 
 --Alliance Rep total initialization and ID indices 
-OoE = 0; --Order of Embers rep (ID = 2161)
-SL = 0; --7th Legion rep (ID = 2159)
-PA = 0; --Proudmoore Admiralty rep (ID = 2160)
-SW = 0; --Storm's Wake rep (ID = 2162)
+OoE = 0; --Order of Embers rep	    (ID = 2161)
+SL = 0; --7th Legion rep 			(ID = 2159)
+PA = 0; --Proudmoore Admiralty rep  (ID = 2160)
+SW = 0; --Storm's Wake rep 			(ID = 2162)
 
 --**NOTE: Alliance and Horde both use the same rep ID's for Champions of Azeroth and Tortollan Seekers
 
@@ -56,23 +60,22 @@ SW = 0; --Storm's Wake rep (ID = 2162)
 --7th Legion = , 2159
 local worldQuestReps = {
 --Zuldazar Quests
-[52923]={2103, 2159}, --Add More to the Collection -- Gives 75 ZE rep
-[49800]={2103, 2159}, --Atal'Dazar: Spiders! -- Gives 75 ZE rep
-[50864]={2103, 2159}, --Atal'Zul Gotaka  -- Gives 75 ZE rep ***
-[50863]={2103, 2159}, --Avatar of Xolotal -- Gives 75 ZE rep
-[52858]={2103, 2159, 2164}, --Azerite Empowerment(Hex Priest Haraka) -- Gives 125 CoA rep and 75 ZE rep 
-[51444]={2103, 2159, 2164}, --Azerite Empowerment(Zu'shin the Infused) -- Gives 125 CoA rep and 75  ZE rep
-[51179]={2103, 2159, 2164}, --Azerite Madness -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
-[52877]={2103, 2159, 2164}, --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
-[51450]={2103, 2159, 2164}, --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
-[52877]={2103, 2159, 2164}, --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
-[51175]={2103, 2159, 2164}, --Azerite Wounds -- Gives 125 CoA rep and 75  ZE rep
-[51642]={2103, 2159, 2163}, --Beachhead -- Gives 175 TS rep and 75 ZE rep (Southern coast of Zuldazar)
+[52923]={2103, 2159},		  --Add More to the Collection -- Gives 75 ZE rep
+[49800]={2103, 2159},		  --Atal'Dazar: Spiders! -- Gives 75 ZE rep
+[50864]={2103, 2159},		  --Atal'Zul Gotaka  -- Gives 75 ZE rep ***
+[50863]={2103, 2159},		  --Avatar of Xolotal -- Gives 75 ZE rep
+[52858]={2103, 2159, 2164},   --Azerite Empowerment(Hex Priest Haraka) -- Gives 125 CoA rep and 75 ZE rep 
+[51444]={2103, 2159, 2164},   --Azerite Empowerment(Zu'shin the Infused) -- Gives 125 CoA rep and 75  ZE rep
+[51179]={2103, 2159, 2164},   --Azerite Madness (Zuldazar) -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[52877]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[51450]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[52877]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[51175]={2103, 2159, 2164},   --Azerite Wounds -- Gives 125 CoA rep and 75  ZE rep
+[51642]={2103, 2159, 2163},   --Beachhead -- Gives 175 TS rep and 75 ZE rep (Southern coast of Zuldazar)
 [50527]={2103, 2159},		  --Behind Mogu Lines -- Gives 75 ZE rep **NOTE: According to wowhead, this is Alliance only
 [50652]={2103, 2159},		  --Biting The Hand that Feeds Them -- Give 75 ZE rep **NOTE: According to wowhead, this is Horde only
 [50862]={2103, 2159},		  --Bloodbulge -- gives 75 ZE rep
 [50868]={2103, 2159},		  --Bramblewing -- gives 75 ZE rep
-[50848]={2158, 2159},		  --Brgl-Lrgl the Basher *** says it's a Zuldazar quest despite being in Vol'dun, rep unconfirmed
 [50578]={2103, 2159},		  --Bring Ruin AGain -- gives 75 ZE rep
 [51475]={2103, 2159},		  --Brutal Escort -- gives 75 ZE rep
 [50966]={2103, 2159},		  --Cleanup Crew -- gives 75 ZE rep
@@ -97,16 +100,15 @@ local worldQuestReps = {
 [50765]={2103, 2159},		  --Herding Children -- gives 75 ZE rep
 [51497]={2103, 2159},		  --Hex Education -- gives 75 ZE rep
 [51178]={2103, 2159},		  --Hundred Troll Holdout -- gives 75 ZE rep
-[51305]={2103, 2159},		  --Jelly Clouds -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+--[51305]={2103, 2159},		  --Jelly Clouds -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck  ** COMMENTING OUT DUE TO QUEST BEING BUGGED
 [50859]={2103, 2159},		  --Kandak -- gives 75 ZE rep
 [50869]={2103, 2159},		  --Kiboku -- gives 75 ZE rep
 [50547]={2103, 2159},		  --Knives of Zul -- gives 75 ZE rep
 [50845]={2103, 2159},		  --Kul'krazahn -- gives 75 ZE rep
-[50852]={2103, 2159},		  --Lady Seirine -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+--[50852]={2103, 2159},		  --Lady Seirine -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck  ** COMMENTING OUT DUE TO QUEST BEING BUGGED
 [50885]={2103, 2159},		  --Lei-zhi -- gives 75 ZE rep
 [51496]={2103, 2159},		  --Loa Your Standards -- gives 75 ZE rep
-[51636]={2103, 2159, 2163}, --Make Loh Go -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
-[50851]={2103, 2159},		  --Mor'fani the Exile *** says it's a Zuldazar quest despite being in Vol'dun, rep unconfirmed
+[51636]={2103, 2159, 2163},   --Make Loh Go -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
 [50876]={2103, 2159},		  --Murderbeak -- gives 75 ZE rep
 [50747]={2103, 2159},		  --No Good Amani -- gives 75 ZE rep
 [50855]={2103, 2159},		  --Old R'gal -- gives 75 ZE rep
@@ -126,7 +128,7 @@ local worldQuestReps = {
 [49413]={2103, 2159},		  --Scamps with Scrolls -- gives 75 ZE rep -- wowhead says Horde only
 [51822]={2103, 2159},		  --Scrolls and Scales -- gives 75 ZE rep -- wowhead says Alliance only
 [50581]={2103, 2159},		  --Scrolls and Scales -- gives 75 ZE rep -- wowhead says Horde only
-[51630]={2103, 2159, 2163}, --Shell Game -- gives 175 TS rep and 75 ZE rep - Southwestern Zuldazar
+[51630]={2103, 2159, 2163},   --Shell Game -- gives 175 TS rep and 75 ZE rep - Southwestern Zuldazar
 [50737]={2103, 2159},		  --Silence the Speakers -- gives 75 ZE rep -- wowhead says Alliance only
 [50858]={2103, 2159},		  --Sky Queen -- gives 75 ZE rep -- wowhead says Alliance only
 [52938]={2103, 2159},		  --Small Beginnings -- gives 75 ZE rep -- pet battle (Zujai)
@@ -148,12 +150,68 @@ local worldQuestReps = {
 [51374]={2103, 2159},		  --Unending Gorilla Warfare -- gives 75 ZE rep -- wowhead says Alliance only
 [50872]={2103, 2159},		  --Warcrawler Karkithiss -- gives 75 ZE rep
 [50619]={2103, 2159},		  --What Goes Up -- gives 75 ZE rep -- wowhead says Horde only
-[50849]={2103, 2159},		  --Witch Doctor Habra'du -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+--[50849]={2103, 2159},		  --Witch Doctor Habra'du -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck  ** COMMENTING OUT DUE TO QUEST BEING BUGGED
 [50782]={2103, 2159},		  --Word on the Streets -- gives 75 ZE rep -- wowhead says Alliance only
 [50957]={2103, 2159},		  --Wrath of Rezan -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
 [51824]={2103, 2159},		  --You're Grounded -- gives 75 ZE rep -- wowhead says Alliance only
 [52937]={2103, 2159},		  --You've Never Seen Jammer Upset -- gives 75 ZE rep -- pet battle (Jammer)
-[50866]={2103, 2159}		  --Zayoos -- gives 75 ZE rep
+[50866]={2103, 2159},		  --Zayoos -- gives 75 ZE rep
+
+--Vol'dun quests
+[52798]={2158},				  --A few More Charges -- gives 75 Vol rep (Horde only)
+[49013]={2158},				  --A Jolt of Power -- gives 75 Vol rep (Horde only)
+[51238]={2158},		  		  --Abandoned  in the Burrows -- gives 75 Vol rep (Horde only)
+[51105]={2158, 2159},		  --Ak'tar -- gives 75 Vol or 7th L rep
+[51095]={2158, 2159},		  --Ashmane -- gives 75 Vol or 7th L rep
+[51096]={2158, 2159},		  --Azer'tor -- gives 75 Vol or 7th L rep
+[52849]={2158, 2159},		  --Azerite Empowerment (Warlord Dagu) -- Gives 125 CoA rep and 75 Vol or 7th L rep
+[51185]={2158, 2159},		  --Azerite Empowerment (Skithis the Infused) -- Gives 125 CoA rep and 75 Vol or 7th L rep
+[51422]={2103, 2159, 2164},   --Azerite Madness(Vol'dun) -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[50975]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[52875]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[51428]={2103, 2159, 2164},   --Azerite Wounds -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
+[51117]={2158, 2159},		  --Bajiani the Slick -- gives 75 Vol or 7th L rep
+[51641]={2103, 2159, 2163},   --Beachhead -- Gives 175 TS rep and 75 ZE rep (Northeastern coast of Vol'dun)
+[51210]={2158},		  		  --Blast Back the Siege -- gives 75 Vol rep (Horde only)
+[51097]={2158, 2159},		  --Bloated Ruincrawler -- gives 75 Vol or 7th L rep
+[51118]={2158, 2159},		  --Bloodwing Bonepicker -- gives 75 Vol or 7th L rep
+[51155]={2158, 2159},		  --Brgl-Lrgl the Basher -- gives 75 Vol rep
+[51793]={2159},		  		  --Bubbling Totem Testing -- gives 75 7th L rep (Alliance only)
+[51791]={2158},		  		  --Bubbling Totem Testing -- gives 75 Vol rep (Horde only)
+[49345]={2158},				  --Buried Treasure -- gives 75 Vol rep (Horde only)
+[51250]={2158},		 		  --Buzz off! -- gives 75 Vol rep (Horde only)
+[51098]={2158, 2159},		  --Commodore Calhoun -- gives 75 Vol or 7th L rep
+[51559]={2158},		 		  --Damaged Goods -- gives 75 Vol rep (Horde only)
+[51562]={2159},		 		  --Damaged Goods -- gives 75 7th L rep (Alliance only)
+[52878]={2158, 2159},		  --Desert Survivors -- gives 75 Vol or 7th L rep -- Battle pet(Kusa)
+[51780]={2158},		 		  --Dinner for Dolly and Dot -- gives 75 Vol rep (Horde only)
+[51121]={2158, 2159},		  --Enraged Krolusk -- gives 75 Vol or 7th L rep
+[51792]={2158},		 		  --Erupting Totem Testing -- gives 75 Vol rep (Horde only)
+[51794]={2159},		 		  --Erupting Totem Testing -- gives 75 7th L rep (Alliance only)
+[51924]={2158, 2159},		  --Faithless Follow-Through -- gives 75 Vol or 7th L rep ***APPEARS TO BE A DUPLICATE
+[51900]={2158, 2159},		  --Faithless Follow-Through -- gives 75 Vol or 7th L rep ***APPEARS TO BE A DUPLICATE
+[51156]={2158, 2159},		  --Fangcaller Xorreth -- gives 75 Vol or 7th L rep
+[51565]={2159},		 		  --Feeding Frenzy -- gives 75 7th L rep (Alliance only)
+[51285]={2158},		 		  --Feeding Frenzy -- gives 75 Vol rep (Horde only)
+[51564]={2159},		 		  --Fertilizer Duty -- gives 75 7th L rep (Alliance only)
+[51198]={2158},		 		  --Fertilizer Duty -- gives 75 Vol rep (Horde only)
+[51157]={2158, 2159},		  --Golanar -- gives 75 Vol or 7th L rep
+[51099]={2158, 2159},		  --Gut-Gut the Glutton -- gives 75 Vol or 7th L rep
+[51108]={2158, 2159},		  --Hivemother Kraxi -- gives 75 Vol or 7th L rep
+[51228]={2158},		 		  --Instant Meat, Ready to Eat -- gives 75 Vol rep (Horde only)
+--****NEED TO FIGURE OUT WHAT'S GOING ON WITH "INSTRUCTIONS NOT INCLUDED" - 9 VERSIONS
+[51100]={2158, 2159},		  --Jumbo Sandsnapper -- gives 75 Vol or 7th L rep
+[51125]={2158, 2159},		  --Jungleweb Hunter -- gives 75 Vol or 7th L rep
+[51102]={2158, 2159},		  --Kamid the Trapper -- gives 75 Vol or 7th L rep
+[52850]={2158, 2159},		  --Keeyo's Champions of Vol'dun -- gives 75 Vol or 7th L rep -- Battle pet (Keeyo)
+[51429]={2158, 2159},		  --King Clickyclack -- gives 75 Vol or 7th L rep
+[51252]={2158, 2159},		  --Kiro's Desert Flower -- gives 75 Vol or 7th L rep
+[51635]={2103, 2159, 2163},   --Make Loh Go -- Gives 175 TS rep and 75 ZE rep (Northeastern coast of Vol'dun)
+[51153]={2158, 2159},		  --Mor'fani the Exile -- gives 75 Vol rep
+[51103]={2158, 2159},		  --Nez'ara -- gives 75 Vol or 7th L rep
+[51934]={2159}		 		  --No Negotiations -- gives 75 7th L rep (Alliance only)
+
+
 }
 
 
