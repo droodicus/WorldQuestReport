@@ -30,6 +30,20 @@ end)
 
 print("WQ Report active!");
 
+--[[
+GetNumQuestLogRewards:
+Gold reward: returns 0
+Gear reward: returns 1
+Rep token reward: 0
+Pet charm reward: 1
+
+GetNumQuestLogRewardCurrencies(QuestID) returns a non-zero number if the quest reward is a rep token
+GetQuestLogRewardMoney(QuestID) returns the amount of money a WQ rewards (in copper)
+-EXAMPLE: if it retursn 842500, that's 84 gold, 25 silver
+--therefore, 100 copper = 1 silver, 10,000 copper = 1 gold
+]]
+local name, texture, numItems = GetQuestLogRewardCurrencyInfo(50718);
+print(GetQuestLink(50718), ": ", name);
 
 --Counter for number of World Quests currently active
 numWQs = 0;
@@ -161,11 +175,11 @@ local worldQuestReps = {
 [52798]={2158},				  --A few More Charges -- gives 75 Vol rep (Horde only)
 [49013]={2158},				  --A Jolt of Power -- gives 75 Vol rep (Horde only)
 [51238]={2158},		  		  --Abandoned  in the Burrows -- gives 75 Vol rep (Horde only)
-[51105]={2158, 2159},		  --Ak'tar -- gives 75 Vol or 7th L rep
-[51095]={2158, 2159},		  --Ashmane -- gives 75 Vol or 7th L rep
-[51096]={2158, 2159},		  --Azer'tor -- gives 75 Vol or 7th L rep
-[52849]={2158, 2159},		  --Azerite Empowerment (Warlord Dagu) -- Gives 125 CoA rep and 75 Vol or 7th L rep
-[51185]={2158, 2159},		  --Azerite Empowerment (Skithis the Infused) -- Gives 125 CoA rep and 75 Vol or 7th L rep
+[51105]={2158, 2159, 2164},	  --Ak'tar -- gives 75 Vol or 7th L rep
+[51095]={2158, 2159, 2164},	  --Ashmane -- gives 75 Vol or 7th L rep
+[51096]={2158, 2159, 2164},	  --Azer'tor -- gives 75 Vol or 7th L rep
+[52849]={2158, 2159, 2164},	  --Azerite Empowerment (Warlord Dagu) -- Gives 125 CoA rep and 75 Vol or 7th L rep
+[51185]={2158, 2159, 2164},	  --Azerite Empowerment (Skithis the Infused) -- Gives 125 CoA rep and 75 Vol or 7th L rep
 [51422]={2103, 2159, 2164},   --Azerite Madness(Vol'dun) -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
 [50975]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
 [52875]={2103, 2159, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75  ZE rep **NOTE: Appears to be same rep ID for all zones
