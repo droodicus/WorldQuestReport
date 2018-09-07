@@ -40,10 +40,14 @@ Pet charm reward: 1
 GetNumQuestLogRewardCurrencies(QuestID) returns a non-zero number if the quest reward is a rep token
 GetQuestLogRewardMoney(QuestID) returns the amount of money a WQ rewards (in copper)
 -EXAMPLE: if it retursn 842500, that's 84 gold, 25 silver
+gold = money/10000;
+silver = (money - (gold * 10000)) / 100;
+print("Reward= ", gold, " gold, ", silver, " silver");)
 --therefore, 100 copper = 1 silver, 10,000 copper = 1 gold
+
+Azerite currency ID = 1553
 ]]
-local name, texture, numItems = GetQuestLogRewardCurrencyInfo(50718);
-print(GetQuestLink(50718), ": ", name);
+
 
 --Counter for number of World Quests currently active
 numWQs = 0;
@@ -71,9 +75,10 @@ SW = 0; --Storm's Wake rep 			(ID = 2162)
 --Lo'kuno has ID 50509 and gives 75 rep for Talanji (repID 2156)
 --local worldQuestReps = {[50512]=2156, [50869]=2103, [50581]=2103, [50509]=2156, [50592]=2103, [50877]=2103, [52858]={2103, 2159, 2164}, [50885]=2103, [52862]={2164, 2157}, [52862]={2164, 2161, 2157}, [52858]={2164, 2159, 2157}}
 
---7th Legion = , 2159
+
+--***NEED TO ADD "WORK ORDER" QUESTS FOR VOL'DUN
 local worldQuestReps = {
---Zuldazar Quests
+--Zuldazar Quests******************************************************************************************
 [52923]={2103, 2159},		  --Add More to the Collection -- Gives 75 ZE rep
 [49800]={2103, 2159},		  --Atal'Dazar: Spiders! -- Gives 75 ZE rep
 [50864]={2103, 2159},		  --Atal'Zul Gotaka  -- Gives 75 ZE rep ***
@@ -149,6 +154,28 @@ local worldQuestReps = {
 [53165]={2103, 2159},		  --Stopping Antiquities Theft -- gives 75 ZE rep -- wowhead says Alliance only
 [50873]={2103, 2159},		  --Strange Egg -- gives 75 ZE rep
 [50756]={2103, 2159},		  --Subterranean Evacuation -- gives 75 ZE rep -- wowhead says Alliance only
+--Supplies Needed quests give Honorbound rep, NOT ZE
+[51038]={2157},		 		  --Supplies Needed: Akunda's Bite -- gives 75 HB rep (Horde only)
+[51044]={2157},		 		  --Supplies Needed: Blood-Stained Bone -- gives 75 HB rep (Horde only)
+[51045]={2157},		 		  --Supplies Needed: Calcified Bone -- gives 75 HB rep (Horde only)
+[51046]={2157},		 		  --Supplies Needed: Coarse Leather -- gives 75 HB rep (Horde only)
+[51051]={2157},		 		  --Supplies Needed: Deep Sea Satin -- gives 75 HB rep (Horde only)
+[52387]={2157},		 		  --Supplies Needed: Frenzied Fangtooth -- gives 75 HB rep (Horde only)
+[52382]={2157},		 		  --Supplies Needed: Great Sea Catfish -- gives 75 HB rep (Horde only)
+[52388]={2157},		 		  --Supplies Needed: Lane Snapper -- gives 75 HB rep (Horde only)
+[51049]={2157},		 		  --Supplies Needed: Mistscale -- gives 75 HB rep (Horde only)
+[51042]={2157},		 		  --Supplies Needed: Monelite Ore -- gives 75 HB rep (Horde only)
+[51036]={2157},		 		  --Supplies Needed: Riverbud -- gives 75 HB rep (Horde only)
+[52383]={2157},		 		  --Supplies Needed: Sand Shifter -- gives 75 HB rep (Horde only) ****wowhead says ZE rep too?
+[51041]={2157},		 		  --Supplies Needed: Sea Stalk -- gives 75 HB rep (Horde only)
+[51048]={2157},		 		  --Supplies Needed: Shimmerscale -- gives 75 HB rep (Horde only)
+[51040]={2157},		 		  --Supplies Needed: Siren's Pollen -- gives 75 HB rep (Horde only)
+[51037]={2157},		 		  --Supplies Needed: Star Moss -- gives 75 HB rep (Horde only)
+[51043]={2157},		 		  --Supplies Needed: Storm Silver Ore -- gives 75 HB rep (Horde only)
+[51047]={2157},		 		  --Supplies Needed: Tempest Hide -- gives 75 HB rep (Horde only) ****wowhead says ZE rep too?
+[51050]={2157},		 		  --Supplies Needed: Tidespray Linen -- gives 75 HB rep (Horde only)
+[52384]={2157},		 		  --Supplies Needed: Tiragarde Perch -- gives 75 HB rep (Horde only)
+[51039]={2157},		 		  --Supplies Needed: Winter's Kiss -- gives 75 HB rep (Horde only)
 [51081]={2103, 2159},		  --Syrawon the Dominus -- gives 75 ZE rep
 [50867]={2103, 2159},		  --Tambano -- gives 75 ZE rep
 [51494]={2103, 2159},		  --The Blood Gate -- gives 75 ZE rep
@@ -166,12 +193,30 @@ local worldQuestReps = {
 [50619]={2103, 2159},		  --What Goes Up -- gives 75 ZE rep -- wowhead says Horde only
 --[50849]={2103, 2159},		  --Witch Doctor Habra'du -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck  ** COMMENTING OUT DUE TO QUEST BEING BUGGED
 [50782]={2103, 2159},		  --Word on the Streets -- gives 75 ZE rep -- wowhead says Alliance only
+
+[52425]={2103},		 		  --Work Order: Battle Flag: Spirit of Freedom -- gives 75 ZE rep (Horde only)
+[51010]={2103},		 		  --Work Order: Coarse Leather -- gives 75 ZE rep (Horde only)
+[52393]={2103},		 		  --Work Order: Contract: Tortollan Seekers -- gives 75 ZE rep (Horde only)
+[52395]={2103},		 		  --Work Order: Contract: Zandalari Empire -- gives 75 ZE rep (Horde only)
+[52374]={2103},		 		  --Work Order: Contract: Crow's Nest Scope -- gives 75 ZE rep (Horde only)
+[52335]={2103},		 		  --Work Order: Contract: Demitri's Draught of Deception -- gives 75 ZE rep (Horde only)
+[52373]={2103},		 		  --Work Order: Electroshock Mount Motivator -- gives 75 ZE rep (Horde only)
+[52358]={2103},		 		  --Work Order: Enchant Ring: Seal of Haste -- gives 75 ZE rep (Horde only)
+[52359]={2103},		 		  --Work Order: Enchant Ring: Seal of Mastery -- gives 75 ZE rep (Horde only)
+[52369]={2103},		 		  --Work Order: Incendiary Ammunition -- gives 75 ZE rep (Horde only)
+[52408]={2103},		 		  --Work Order: Kyanite -- gives 75 ZE rep (Horde only)
+[52336]={2103},		 		  --Work Order: Lightfoot Potion -- gives 75 ZE rep (Horde only)
+[52349]={2163},		 		  --Work Order: Loa Loaf -- gives 175 TS rep (wowhead says TS rep for both sides)
+[51013]={2103},		 		  --Work Order: Mistscale -- gives 75 ZE rep (Horde only)
+[52359]={2163},		 		  --Work Order: Mon'Dazi -- gives 175 TS rep (wowhead says TS rep for both sides)
+[52342]={2157},		 		  --Work Order: Monel-Hardened Hoofplates -- gives 75 HB rep (Horde only)
+[52341]={2157},		 		  --Work Order: Monel-Hardened Stirrups -- gives 75 HB rep (Horde only)
 [50957]={2103, 2159},		  --Wrath of Rezan -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
 [51824]={2103, 2159},		  --You're Grounded -- gives 75 ZE rep -- wowhead says Alliance only
 [52937]={2103, 2159},		  --You've Never Seen Jammer Upset -- gives 75 ZE rep -- pet battle (Jammer)
 [50866]={2103, 2159},		  --Zayoos -- gives 75 ZE rep
 
---Vol'dun quests
+--Vol'dun quests*****************************************************************************************
 [52798]={2158},				  --A few More Charges -- gives 75 Vol rep (Horde only)
 [49013]={2158},				  --A Jolt of Power -- gives 75 Vol rep (Horde only)
 [51238]={2158},		  		  --Abandoned  in the Burrows -- gives 75 Vol rep (Horde only)
@@ -213,7 +258,8 @@ local worldQuestReps = {
 [51099]={2158, 2159},		  --Gut-Gut the Glutton -- gives 75 Vol or 7th L rep
 [51108]={2158, 2159},		  --Hivemother Kraxi -- gives 75 Vol or 7th L rep
 [51228]={2158},		 		  --Instant Meat, Ready to Eat -- gives 75 Vol rep (Horde only)
---****NEED TO FIGURE OUT WHAT'S GOING ON WITH "INSTRUCTIONS NOT INCLUDED" - 9 VERSIONS
+[51239]={2158},		 		  --Instructions Not Included -- gives 75 Vol rep (Horde only) *****OTHER VERSIONS DON'T WORK
+[51928]={2159},		 		  --Instructions Not Included -- gives 75 7th L rep (Alliance only) *****OTHER VERSIONS DON'T WORK
 [51100]={2158, 2159},		  --Jumbo Sandsnapper -- gives 75 Vol or 7th L rep
 [51125]={2158, 2159},		  --Jungleweb Hunter -- gives 75 Vol or 7th L rep
 [51102]={2158, 2159},		  --Kamid the Trapper -- gives 75 Vol or 7th L rep
@@ -223,9 +269,50 @@ local worldQuestReps = {
 [51635]={2103, 2159, 2163},   --Make Loh Go -- Gives 175 TS rep and 75 ZE rep (Northeastern coast of Vol'dun)
 [51153]={2158, 2159},		  --Mor'fani the Exile -- gives 75 Vol rep
 [51103]={2158, 2159},		  --Nez'ara -- gives 75 Vol or 7th L rep
-[51934]={2159}		 		  --No Negotiations -- gives 75 7th L rep (Alliance only)
+[51934]={2159},		 		  --No Negotiations -- gives 75 7th L rep (Alliance only)
+[53300]={2158, 2159},		  --Overgrown Anchor Weed -- gives 75 Vol or 7th L rep
+[51853]={2159},		 		  --Preserve the Oasis -- gives 75 7th L rep (Alliance only)
+[51853]={2158},		 		  --Preserve the Oasis -- gives 75 Vol rep (Horde only)
+[51760]={2159},		 		  --Ranishu Feeding Frenzy -- gives 75 7th L rep (Alliance only)
+[47704]={2158},		 		  --Ranishu Feeding Frenzy -- gives 75 Vol rep (Horde only)
+[51124]={2158, 2159},		  --Relic Hunter Hazaak -- gives 75 Vol or 7th L rep
+[51330]={2158},		 		  --Resilient Seeds -- gives 75 Vol rep (Horde only)
+[51804]={2159},		 		  --Running Interference -- gives 75 7th L rep (Alliance only)
+[51173]={2158},		 		  --Sandfishing -- gives 75 Vol rep (Horde only)
+[52196]={2158, 2159},		  --Sandswept Bones -- gives 75 Vol or 7th L rep -- World Boss
+[51107]={2158, 2159},		  --Scaleclaw Broodmother -- gives 75 Vol or 7th L rep
+[51122]={2158, 2159},		  --Scorpox -- gives 75 Vol or 7th L rep
+[51629]={2158, 2159, 2163},   --Shell Game -- gives 175 TS rep and 75 ZE rep - Western Vol'dun
+[51123]={2158, 2159},		  --Sirokar -- gives 75 Vol or 7th L rep
+[51104]={2158, 2159},		  --Skycaller Teskris -- gives 75 Vol or 7th L rep
+[51116]={2158, 2159},		  --Skycarver Krakit -- gives 75 Vol or 7th L rep
+[52856]={2158, 2159},		  --Snakes on a Terrace -- gives 75 Vol or 7th L rep -- Battle pet (Sizzik)
+[51106]={2158, 2159},		  --Songstress Nahjeen -- gives 75 Vol or 7th L rep
+[51836]={2159},		 		  --Sourcing Resources -- gives 75 7th L rep (Alliance only)
+[51558]={2158},		 		  --Spider Scorching -- gives 75 Vol rep (Horde only) ***APPEARS TO BE A DUPLICATE
+[51561]={2158},		 		  --Spider Scorching -- gives 75 Vol rep (Horde only) ***APPEARS TO BE A DUPLICATE
+[51120]={2158, 2159},		  --Stef "Marrow" Quin -- gives 75 Vol or 7th L rep
+[51831]={2158, 2159},		  --Swift Strike -- gives 75 Vol or 7th L rep
+[52059]={2159},		 		  --Thar She Sinks -- gives 75 7th L rep (Alliance only)
+[51997]={2158},		 		  --Thar She Sinks -- gives 75 Vol rep (Horde only)
+[51957]={2158},		 		  --The Wrath of Vorrik -- gives 75 Vol rep (Horde only)
+[51963]={2159},		 		  --The Wrath of Vorrik -- gives 75 7th L rep (Alliance only)
+[51119]={2158, 2159},		  --Vathikur -- gives 75 Vol or 7th L rep
+[51983]={2158},		 		  --Vorrik's Vengeance -- gives 75 Vol rep (Horde only)
+[51995]={2159},		 		  --Vorrik's Vengeance -- gives 75 7th L rep (Alliance only)
+[51316]={2158},		 		  --Walking in a Spiderweb -- gives 75 Vol rep (Horde only)
+[51223]={2158},		 		  --Walking on Broken Glass -- gives 75 Vol rep (Horde only)
+[51112]={2158, 2159},		  --Warbringer Hozzik -- gives 75 Vol or 7th L rep
+[51113]={2158, 2159},		  --Warlord Zothix -- gives 75 Vol or 7th L rep
+[51114]={2158, 2159},		  --Warmother Captive -- gives 75 Vol or 7th L rep
+[52864]={2158, 2159},		  --What Do you Mean, Mind Controlling Plants -- gives 75 Vol or 7th L rep -- Battle pet (Spineleaf)
+[51315]={2103, 2159},		  --Wild Flutterbies -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[51322]={2158},		 		  --Wings and Stingers -- gives 75 Vol rep (Horde only)
+[51763]={2158},		 		  --Zem'lan Rescue -- gives 75 Vol rep (Horde only)
+[51783]={2159},		 		  --Zem'lan Rescue -- gives 75 7th L rep (Alliance only)
+[51115]={2158, 2159}		  --Zunashi the Exile -- gives 75 Vol or 7th L rep
 
-
+--Nazmir quests***************************************************************************************************
 }
 
 
@@ -233,9 +320,10 @@ function ParseHordeWQs()
 	for q, r in pairs(worldQuestReps) do
 		if(GetQuestLink(q) ~= nil) then
 			--if(IsQuestFlaggedCompleted(q)) then
-			if(IsQuestComplete(q)) then
-				print(GetQuestLink(q), " has been completed");
-			else
+			-- if(IsQuestComplete(q)) then
+				-- print(GetQuestLink(q), " has been completed");
+			-- else
+			if(IsQuestComplete(q) == false) then
 				--if(C_TaskQuest.IsActive(q) and C_TaskQuest.GetQuestTimeLeftMinutes(q) > 0) then
 				if(C_TaskQuest.GetQuestTimeLeftMinutes(q) > 0) then
 					print(GetQuestLink(q), " IS A VALID WQ");
@@ -305,9 +393,10 @@ end
 function ParseAllianceWQs()
 	for q, r in pairs(worldQuestReps) do
 		if(GetQuestLink(q) ~= nil) then
-			if(IsQuestFlaggedCompleted(q)) then
-				print(GetQuestLink(q), " has been completed");
-			else
+			-- if(IsQuestFlaggedCompleted(q)) then
+				-- print(GetQuestLink(q), " has been completed");
+			-- else
+			if(IsQuestComplete(q) == false) then
 				if(C_TaskQuest.IsActive(q)) then
 					print(GetQuestLink(q), " IS A VALID WQ");
 					numWQs = numWQs + 1;
@@ -373,6 +462,7 @@ end
 
 
 function CheckContracts()
+--Horde + Neutral contracts
 	if(AuraUtil.FindAuraByName("Contract: Zandalari Empire", "player") ~= nil) then
 		print("Zandloople Empurr potential contract rep: ", contract_rep);
 		ZE = ZE + contract_rep;
@@ -388,6 +478,16 @@ function CheckContracts()
 	elseif(AuraUtil.FindAuraByName("Contract: Champions of Azeroth", "player") ~= nil) then
 		print("Magni's Magnanimous Minutemen potential contract rep: ", contract_rep);
 		CoA = CoA + contract_rep;
+--Alliance contracts		
+	elseif(AuraUtil.FindAuraByName("Contract: Proudmoore Admiralty", "player") ~= nil) then
+		print("Making Proudmoores More Proud potential contract rep: ", contract_rep);
+		PA = PA + contract_rep;
+	elseif(AuraUtil.FindAuraByName("Contract: Order of Embers", "player") ~= nil) then
+		print("Order of Burning Stuff potential contract rep: ", contract_rep);
+		OoE = OoE + contract_rep;
+	elseif(AuraUtil.FindAuraByName("Contract: Storm's Wake", "player") ~= nil) then
+		print("Anti-Hentai Patrol potential contract rep: ", contract_rep);
+		SW = SW + contract_rep;
 	else
 		print("NO VALID CONTRACT DETECTED");
 	end

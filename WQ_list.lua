@@ -18,7 +18,7 @@ SW = 0; --Storm's Wake rep 			(ID = 2162)
 --*****REMINDER THAT DUNGEON WQS COME FROM THE DUNGEON, NOT THE SURROUNDING ZONE
 --Triple asterisk at the end of a comment means that the rep gain needs to be confirmed - wowhead doesn't state.
 --Unless stated otherwise, everything that gives ZE rep (2103) also gives the same amount for SL (2159)
---***NEED TO ADD "SUPPLIES NEEDED" AND "WORK ORDER" QUESTS FOR ZULDAZAR
+--***NEED TO ADD "SUPPLIES NEEDED" AND "WORK ORDER" QUESTS FOR ZULDAZAR AND VOL'DUN
 --Need to confirm Horde/Alliance only quests and adjust their data to reflect so
 --Also need to adjust data to include 7th Legion rep ID (2159) for their respective quests
 local worldQuestReps = {
