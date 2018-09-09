@@ -7,7 +7,7 @@ f:RegisterEvent("PLAYER_LOGIN")
 
 f:SetScript("OnEvent", function(f, event)
     if event == "PLAYER_LOGIN" then
-		if(UnitLevel("player") == 120) then
+		--if(UnitLevel("player") == 120) then
 			if(UnitFactionGroup("player") == "Horde") then
 				print("CHARACTER CONFIRMED HORDE, ZUG ZUG");
 				ParseHordeWQs();
@@ -21,9 +21,9 @@ f:SetScript("OnEvent", function(f, event)
 				OutputAllianceRepSums();
 				print("Num WQs active :", numWQs);
 			end
-		else
-			print("Level up scrub");
-		end
+		--else
+		--	print("Level up scrub");
+		--end
     end
 end)
 
@@ -42,15 +42,42 @@ GetQuestLogRewardMoney(QuestID) returns the amount of money a WQ rewards (in cop
 -EXAMPLE: if it retursn 842500, that's 84 gold, 25 silver
 gold = money/10000;
 silver = (money - (gold * 10000)) / 100;
-print("Reward= ", gold, " gold, ", silver, " silver");)
+print("Reward= ", gold, " gold, ", silver, " silver");
 --therefore, 100 copper = 1 silver, 10,000 copper = 1 gold
 
 Azerite currency ID = 1553
+
+QID = 51890
+local numQuestCurrencies = GetNumQuestLogRewardCurrencies(QID)
+if numQuestCurrencies > 0 then
+	for currencyNum = 1, numQuestCurrencies do 
+		local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(currencyNum, QID)
+		if currencyID == 1553 then
+			print(numItems);
+		end
+	end
+end
+
+
+function CheckMoney()
+	questMoney = GetQuestLogRewardMoney(51405);
+	print("Unprocessed money= ", questMoney);
+	gold = questMoney/10000;
+	--print("Gold: ", gold);
+	gold = math.floor(gold);
+	silver = (questMoney - (gold * 10000)) / 100;
+	print("Gold: ", gold);
+	print("Silver: ", silver);
+	print("Reward= ", gold, " gold, ", silver, " silver");
+end
 ]]
 
 
 --Counter for number of World Quests currently active
 numWQs = 0;
+--initialization of currency total variables
+totalAzerite = 0;
+totalMoney = 0;
 
 --Horde Rep total initialization and ID indices 
 CoA = 0; --Champions of Azeroth rep (ID = 2164)
@@ -66,14 +93,51 @@ SL = 0; --7th Legion rep 			(ID = 2159)
 PA = 0; --Proudmoore Admiralty rep  (ID = 2160)
 SW = 0; --Storm's Wake rep 			(ID = 2162)
 
---**NOTE: Alliance and Horde both use the same rep ID's for Champions of Azeroth and Tortollan Seekers
 
 
---Scout Skrasniss quest has ID 50512 and gives 75 rep for Talanji (repID 2156)
---Kiboku quest has ID 50869 and gives 75 rep for Zandalari Empire (repID 2103)
---Scrolls and Scales has ID 50581 and gives 75 rep for Zandalari Empire (repID 2103)
---Lo'kuno has ID 50509 and gives 75 rep for Talanji (repID 2156)
---local worldQuestReps = {[50512]=2156, [50869]=2103, [50581]=2103, [50509]=2156, [50592]=2103, [50877]=2103, [52858]={2103, 2159, 2164}, [50885]=2103, [52862]={2164, 2157}, [52862]={2164, 2161, 2157}, [52858]={2164, 2159, 2157}}
+--[[
+mapID's
+AZEROTH = 947
+ZANDALAR = 875
+VOLDUN = 864
+NAZMIR = 863
+ZULDAZAR = 862
+KUL_TIRAS = 876
+STORMSONG_VALLEY = 942
+DRUSTVAR = 896
+TIRAGARDE_SOUND = 895
+]]
+mapID = 862;
+
+ print("MapID: ", mapID);
+ mapname = C_Map.GetMapInfo(mapID).name;
+ print("Map: ", mapname);
+ 
+mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID);
+
+--/dump C_TaskQuest.GetQuestsForPlayerByMapID(862)
+
+if mapQuests then
+	for i, info in ipairs(mapQuests) do
+		if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
+			--print(i, "'s Quest ID: ", info.questId);
+			numWQs = numWQs + 1;
+			print(GetQuestLink(info.questId), ", mapID: ", info.mapID);
+			--GetQuestReps(info.questId, info.mapID); --See function below for details
+		else
+			print("Well this is awkward.");
+		end
+	end
+end
+
+
+--***Need to split world quest reps into separate tables based off of zones
+--function picks a zone's table based off of the mID parameter
+--function then searches that table for the qID parameter and returns its respective reputation(s)
+-- function GetQuestReps(qID, mID)	{
+	
+
+-- }
 
 
 --***NEED TO ADD "WORK ORDER" QUESTS FOR VOL'DUN
@@ -306,13 +370,15 @@ local worldQuestReps = {
 [51113]={2158, 2159},		  --Warlord Zothix -- gives 75 Vol or 7th L rep
 [51114]={2158, 2159},		  --Warmother Captive -- gives 75 Vol or 7th L rep
 [52864]={2158, 2159},		  --What Do you Mean, Mind Controlling Plants -- gives 75 Vol or 7th L rep -- Battle pet (Spineleaf)
-[51315]={2103, 2159},		  --Wild Flutterbies -- ***Unconfirmed rep **no info whatsoever on wowhead page, doublecheck
+[51315]={2158, 2159},		  --Wild Flutterbies 
 [51322]={2158},		 		  --Wings and Stingers -- gives 75 Vol rep (Horde only)
 [51763]={2158},		 		  --Zem'lan Rescue -- gives 75 Vol rep (Horde only)
 [51783]={2159},		 		  --Zem'lan Rescue -- gives 75 7th L rep (Alliance only)
-[51115]={2158, 2159}		  --Zunashi the Exile -- gives 75 Vol or 7th L rep
+[51115]={2158, 2159},		  --Zunashi the Exile -- gives 75 Vol or 7th L rep
 
 --Nazmir quests***************************************************************************************************
+[50478]={2156, 2159}		  --A'yame -- gives 75 TE or 7th L rep
+
 }
 
 
@@ -326,7 +392,7 @@ function ParseHordeWQs()
 			if(IsQuestComplete(q) == false) then
 				--if(C_TaskQuest.IsActive(q) and C_TaskQuest.GetQuestTimeLeftMinutes(q) > 0) then
 				if(C_TaskQuest.GetQuestTimeLeftMinutes(q) > 0) then
-					print(GetQuestLink(q), " IS A VALID WQ");
+					--print(GetQuestLink(q), " IS A VALID WQ");
 					numWQs = numWQs + 1;
 					--if a WQ gives rep for multiple factions, call AddHordeRepToSum for each of them
 					if(type(r) == "table") then
@@ -399,7 +465,7 @@ function ParseAllianceWQs()
 			if(IsQuestComplete(q) == false) then
 				if(C_TaskQuest.IsActive(q)) then
 					print(GetQuestLink(q), " IS A VALID WQ");
-					numWQs = numWQs + 1;
+					--numWQs = numWQs + 1;
 					--if a WQ gives rep for multiple factions, call AddAllianceRepToSum for each of them
 					if(type(r) == "table") then
 						for k, v in pairs(r) do
