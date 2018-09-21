@@ -16,6 +16,9 @@ f:SetScript("OnEvent", function(f, event)
 			zQuests = 0;
 			vQuests = 0;
 			nQuests = 0;
+			dQuests = 0;
+			sQuests = 0;
+			tQuests = 0;
 			contract_rep = 0;
 			--initialization of currency total variables
 			totalAzerite = 0;
@@ -63,7 +66,8 @@ f:SetScript("OnEvent", function(f, event)
 			--Alliance
 			elseif(UnitFactionGroup("player") == "Alliance") then
 				print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
-				ParseQuests(mapID);
+				ParseQuests(875);
+				ParseQuests(876);
 				CheckContracts();
 				OutputAllianceRepSums();
 				print("Num WQs active :", numWQs);
@@ -133,7 +137,7 @@ end
 			]]
 function ParseQuests(mID)
 	mapname = C_Map.GetMapInfo(mID).name;
-	print("Processing map: ", mapname, ". MapID: ", mID);
+	--print("Processing map: ", mapname, ". MapID: ", mID);
 	mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mID);
 
 
@@ -153,6 +157,9 @@ function ParseQuests(mID)
 	--print("ZULDAZAR QUEST COUNT: ", zQuests);
 	--print("VOLDUN QUEST COUNT: ", vQuests);
 	--print("NAZMIR QUEST COUNT: ", nQuests);
+	--print("DRUSTVAR QUEST COUNT: ", dQuests);
+	--print("STORMSONG QUEST COUNT: ", sQuests);
+	--print("TIRAGARDE QUEST COUNT: ", tQuests);
 end
 
 -- local ZuldazarQuests = {
@@ -319,6 +326,7 @@ local VoldunQuests = {
 [51210]={2158},		  		  --Blast Back the Siege -- gives 75 Vol rep (Horde only)
 [51097]={2158, 2159},		  --Bloated Ruincrawler -- gives 75 Vol or 7th L rep
 [51118]={2158, 2159},		  --Bloodwing Bonepicker -- gives 75 Vol or 7th L rep
+[53299]={2158, 2159},		  --Blooming Siren's Sting -- gives 75 Vol or 7th L rep
 [51155]={2158, 2159},		  --Brgl-Lrgl the Basher -- gives 75 Vol rep
 [51793]={2159},		  		  --Bubbling Totem Testing -- gives 75 7th L rep (Alliance only)
 [51791]={2158},		  		  --Bubbling Totem Testing -- gives 75 Vol rep (Horde only)
@@ -355,7 +363,7 @@ local VoldunQuests = {
 [51635]={2103, 2159, 2163},   --Make Loh Go -- Gives 175 TS rep and 75 ZE rep (Northeastern coast of Vol'dun)
 [51153]={2158, 2159},		  --Mor'fani the Exile -- gives 75 Vol rep
 [51103]={2158, 2159},		  --Nez'ara -- gives 75 Vol or 7th L rep
-[51934]={2159},		 		  --No Negotiations -- gives 75 7th L rep (Alliance only)
+[51834]={2159},		 		  --No Negotiations -- gives 75 7th L rep (Alliance only)
 [53300]={2158, 2159},		  --Overgrown Anchor Weed -- gives 75 Vol or 7th L rep
 [51853]={2159},		 		  --Preserve the Oasis -- gives 75 7th L rep (Alliance only)
 [51853]={2158},		 		  --Preserve the Oasis -- gives 75 Vol rep (Horde only)
@@ -523,7 +531,7 @@ local DrustvarQuests = {
 [51541]={2161, 2157},		  --Arclight -- gives 75 Order of Embers or Honorbound rep
 [51466]={2161, 2157},		  --Arvon the Betrayed -- gives 75 Order of Embers or Honorbound rep
 [51542]={2161, 2157},		  --Avalanche -- gives 75 Order of Embers or Honorbound rep
-[51179]={2161, 2157, 2164},   --Azerite Empowerment (Rotbough) -- Gives 125 CoA rep and 75 OoE or HB rep
+[52862]={2161, 2157, 2164},   --Azerite Empowerment (Rotbough) -- Gives 125 CoA rep and 75 OoE or HB rep
 [51612]={2161, 2157, 2164},   --Azerite Empowerment (Sister Hilga) -- Gives 125 CoA rep and 75 OoE or HB rep
 [51608]={2161, 2157, 2164},   --Azerite Madness (Central Drustvar) -- Gives 125 CoA rep and 75 OoE or HB rep
 [51615]={2161, 2157, 2164},   --Azerite Mining (Central Drustvar) -- Gives 125 CoA rep and 75 OoE or HB rep
@@ -678,6 +686,308 @@ local DrustvarQuests = {
 [52364]={2161}		  		  --Work Order: Themo-accelerated Plague Spreader -- gives 75 Order of Embers rep (Alliance only)
 }
 
+local StormsongValleyQuests = {
+[52180]={2162},		  		  --A Brennadam Shame -- gives 75 SW rep (Alliance only)
+[52935]={2162},		  		  --A New Era -- gives 75 SW rep (Alliance only)
+[51855]={2162},		  		  --A Pirate's Life for Me -- gives 75 SW rep (Alliance only)
+[52236]={2157},		  		  --A Thorny Problem -- gives 75 Honorbound rep (Horde only)
+[52140]={2162},		  		  --A Thorny Problem -- gives 75 SW rep (Alliance only)
+[52986]={2157},		  		  --A Wicked Vessel -- gives 75 Honorbound rep (Horde only)
+[52940]={2157},		  		  --Arms Deal -- gives 75 Honorbound rep (Horde only)
+[52165]={2162, 2157},		  --Automated Chaos -- gives 75 SW or Honorbound rep -- Battle Pet (Eddie Fixit)
+[51617]={2162, 2157, 2164},   --Azerite Empowerment (Tidesage Morris) -- Gives 125 CoA rep and 75 SW or HB rep
+[52871]={2162, 2157, 2164},   --Azerite Empowerment (Herald Zaxuthril) -- Gives 125 CoA rep and 75 SW or HB rep
+[51618]={2162, 2157, 2164},   --Azerite Madness -- Gives 125 CoA rep and 75 SW or HB rep
+[51644]={2162, 2157, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75 SW or HB rep
+[52873]={2162, 2157, 2164},   --Azerite Mining -- Gives 125 CoA rep and 75 SW or HB rep
+[51623]={2162, 2157, 2164},   --Azerite Wounds -- Gives 125 CoA rep and 75 SW or HB rep
+[51639]={2162, 2157, 2163},   --Beachhead -- Gives 175 TS rep and 75 SW or HB rep (Western Stormsong Valley)
+[52330]={2162, 2157},   	  --Beehemoth -- Gives 75 SW or HB rep
+[52865]={2162},		  		  --Blockade Runner -- gives 75 SW rep (Alliance only)
+[52063]={2157},		  		  --Boarder Patrol -- gives 75 Honorbound rep (Horde only)
+[52045]={2162},		  		  --Boarder Patrol -- gives 75 SW rep (Alliance only)
+[52071]={2162},		  		  --Briarback Mountain -- gives 75 SW rep (Alliance only)
+[52117]={2157},		  		  --Briarback Mountain -- gives 75 Honorbound rep (Horde only)
+[51828]={2157},		  		  --Burning the Legion -- gives 75 Honorbound rep (Horde only)
+[51782]={2162, 2157},   	  --Captain Razorspine -- Gives 75 SW or HB rep
+[52325]={2162, 2157},   	  --Captured Evil -- Gives 75 SW or HB rep -- Battle pet (Leana Darkwind)
+[53106]={2162},		  		  --Censership -- gives 75 SW rep (Alliance only)
+[53343]={2157},		  		  --Censership -- gives 75 Honorbound rep (Horde only)
+[52882]={2157},		  		  --Controlled Burn -- gives 75 Honorbound rep (Horde only)
+[52310]={2162, 2157},   	  --Corrupted Tideskipper -- Gives 75 SW or HB rep
+[52004]={2157},		  		  --Counter Intelligence -- gives 75 Honorbound rep (Horde only)
+[52306]={2162, 2157},   	  --Croaker -- Gives 75 SW or HB rep
+[51901]={2162, 2157},   	  --Crushtacean -- Gives 75 SW or HB rep
+[51777]={2162, 2157},   	  --Dagrus the Scorned -- Gives 75 SW or HB rep
+[51778]={2162, 2157},   	  --Deepfang -- Gives 75 SW or HB rep
+[51996]={2157},		  		  --Earthcaller's Abode -- gives 75 Honorbound rep (Horde only)
+[51981]={2162},		  		  --Earthcaller's Abode -- gives 75 SW rep (Alliance only)
+[53027]={2162, 2157},   	  --Edge of Glory -- Gives 75 SW or HB rep
+[52947]={2162},		  		  --Ettin Outta Here -- gives 75 SW rep (Alliance only)
+[52011]={2162},		  		  --Fiendish Fields -- gives 75 SW rep (Alliance only)
+[52064]={2157},		  		  --Fiendish Fields -- gives 75 Honorbound rep (Horde only)
+[51781]={2162, 2157},   	  --Foreman Scripps -- Gives 75 SW or HB rep
+[52179]={2162},		  		  --Fortified Resistance -- gives 75 SW rep (Alliance only)
+[51776]={2162, 2157},   	  --Galestorm -- Gives 75 SW or HB rep
+[52133]={2162, 2157},   	  --Good Boy! -- Gives 75 SW or HB rep
+[51779]={2162, 2157},   	  --Grimscowl the Hairbrained -- Gives 75 SW or HB rep
+[52463]={2162, 2157},   	  --Haegol the Hammer -- Gives 75 SW or HB rep
+[52988]={2162},		  		  --House Cleaning -- gives 75 SW rep (Alliance only)
+[51854]={2162},		  		  --I am the Shark -- gives 75 SW rep (Alliance only)
+[52328]={2162, 2157},   	  --Ice Sickle -- Gives 75 SW or HB rep
+[53108]={2162},		  		  --Iconoclasm -- gives 75 SW rep (Alliance only)
+[53344]={2157},		  		  --Iconoclasm -- gives 75 Honorbound rep (Horde only)
+[52115]={2157},		  		  --In the Shadow of the Kracken -- gives 75 Honorbound rep (Horde only)
+[52168]={2162},		  		  --It's Lit -- gives 75 SW rep (Alliance only)
+[52321]={2162, 2157},   	  --Kickers -- Gives 75 SW or HB rep
+[52987]={2162},		  		  --Let's Burn! -- gives 75 SW rep (Alliance only)
+[52941]={2162},		  		  --Light in the Darkness -- gives 75 SW rep (Alliance only)
+[52794]={2162},		  		  --Lizards and Ledgers -- gives 75 SW rep (Alliance only)
+[52239]={2157},		  		  --Loose Change -- gives 75 Honorbound rep (Horde only)
+[52230]={2162},		  		  --Loose Change -- gives 75 SW rep (Alliance only)
+[51633]={2162, 2157, 2163},   --Make Loh Go -- Gives 175 TS rep and 75 SW or HB rep (Western Stormsong Valley)
+[52924]={2162},		  		  --Mead Some Help? -- gives 75 SW rep (Alliance only)
+[52880]={2162, 2157},   	  --Milden Mud Snout -- Gives 75 SW or HB rep
+[52982]={2162},		  		  --Mine or Trouble -- gives 75 SW rep (Alliance only)
+[51840]={2157},		  		  --Oily Mess -- gives 75 Honorbound rep (Horde only)
+[51820]={2162},		  		  --Oily Mess -- gives 75 SW rep (Alliance only)
+[52939]={2162},		  		  --Ordnance Orders -- gives 75 SW rep (Alliance only)
+[52464]={2162, 2157},   	  --Osca the Bloodied -- Gives 75 SW or HB rep
+[52964]={2162},		  		  --Pest Problem -- gives 75 SW rep (Alliance only)
+[51806]={2162, 2157},   	  --Pest Remover Mk II -- Gives 75 SW or HB rep
+[51886]={2162, 2157},   	  --Pinku'shon -- Gives 75 SW or HB rep
+[52936]={2157},		  		  --Plagued Earth Policy -- gives 75 Honorbound rep (Horde only)
+[53107]={2162},		  		  --Plunder and Provisions -- gives 75 SW rep (Alliance only)
+[53345]={2157},		  		  --Plunder and Provisions -- gives 75 Honorbound rep (Horde only)
+[53012]={2162},		  		  --Put Away Your Toys -- gives 75 SW rep (Alliance only)
+[51774]={2162, 2157},   	  --Ragna -- Gives 75 SW or HB rep
+[52211]={2162},		  		  --Red Sunrise -- gives 75 SW rep (Alliance only)
+[51905]={2162, 2157},   	  --Reinforced Hullbreaker -- Gives 75 SW or HB rep
+[52142]={2162},		  		  --Restocking -- gives 75 SW rep (Alliance only)
+[52160]={2157},		  		  --Restocking -- gives 75 Honorbound rep (Horde only)
+[52979]={2162},		  		  --Ritual Cleansing -- gives 75 SW rep (Alliance only)
+--[52199]={2162, 2157},   	  --Rum-Paaaage! -- Gives 75 SW or HB rep -- COMMENTING OUT BECAUSE THIS APPEARS TO BE DEFUNCT
+[52164]={2162},   			  --Rum-Paaaage! -- Gives 75 SW rep (Alliance only)
+[51976]={2162, 2157},   	  --Sabertron -- Gives 75 SW or HB rep
+[51978]={2162, 2157},   	  --Sabertron -- Gives 75 SW or HB rep
+[51977]={2162, 2157},   	  --Sabertron -- Gives 75 SW or HB rep
+[53008]={2157},		  		  --Sage Wisdom -- gives 75 Honorbound rep (Horde only)
+[52309]={2162, 2157},   	  --Sandfang -- Gives 75 SW or HB rep
+[52889]={2162, 2157},   	  --Sandscour -- Gives 75 SW or HB rep
+[52316]={2162, 2157},   	  --Sea Creatures Are Weird -- Gives 75 SW or HB rep -- Battle pet (Ellie Vern)
+[52271]={2162},		  		  --Sea Salt Flavored -- gives 75 SW rep (Alliance only)
+[52280]={2157},		  		  --Sea Salt Flavored -- gives 75 Honorbound rep (Horde only)
+[51759]={2162, 2157},   	  --Seabreaker Skoloth -- Gives 75 SW or HB rep
+[52315]={2162, 2157},   	  --Severus the Outcast -- Gives 75 SW or HB rep
+[51627]={2162, 2157, 2163},   --Shell Game -- Gives 175 TS rep and 75 SW or HB rep (Northwestern Stormsong Valley)
+[51453]={2162, 2157},   	  --Shrine of the Storm: Behold, Pure Water -- Gives 75 SW or HB rep
+[52446]={2162, 2157},   	  --Sister Absinthe -- Gives 75 SW or HB rep
+[51921]={2162, 2157},   	  --Slickspill -- Gives 75 SW or HB rep
+[52174]={2162},		  		  --Snakes in the Shallows -- gives 75 SW rep (Alliance only)
+[50591]={2162},		  		  --Son of a Bee -- gives 75 SW rep (Alliance only)
+[52452]={2162, 2157},   	  --Song Mistress Dadalea -- Gives 75 SW or HB rep -- no wowhead info, might be defunct?
+[53040]={2162},		  		  --Squall Squelching -- gives 75 SW rep (Alliance only)
+[52507]={2162, 2157},   	  --Sticky Mess -- Gives 75 SW or HB rep -- no wowhead info, might be defunct?
+[52879]={2162},		  		  --Stiff Policy -- gives 75 SW rep (Alliance only)
+[51982]={2162, 2157},   	  --Storm's Rage -- Gives 75 SW or HB rep
+[53042]={2157},		  		  --Stormcaller -- gives 75 Honorbound rep (Horde only)
+--[52380]={2162, 2157},   	  --Supplies Neded: Frenzied Fangtooth -- Gives 75 SW or HB rep -- COMMENTING OUT DUE TO STRONG POSSIBILITY OF BEING DEFUNCT
+[52322]={2162, 2157},   	  --Taja the Tidehowler -- Gives 75 SW or HB rep
+[52198]={2162, 2157},   	  --Tank and Spank -- Gives 75 SW or HB rep
+[53025]={2162, 2157},   	  --The Culling -- Gives 75 SW or HB rep
+[52166]={2162, 2157},   	  --The Faceless Herald -- Gives 75 SW or HB rep -- World Boss
+[52476]={2162, 2157},   	  --The Lichen King -- Gives 75 SW or HB rep
+[51827]={2157},		  		  --They Came from Behind! -- gives 75 Honorbound rep (Horde only)
+[52126]={2162, 2157},   	  --This Little Piggy has Sharp Tusks -- Gives 75 SW or HB rep -- Battle pet (Bristlespine)
+[52968]={2157},		  		  --Time for a Little Blood -- gives 75 Honorbound rep (Horde only)
+[52054]={2162},		  		  --Too Much to Bear -- gives 75 SW rep (Alliance only)
+[52229]={2157},		  		  --Too Much to Bear -- gives 75 Honorbound rep (Horde only)
+[51817]={2162},		  		  --Trapped Tortollans -- gives 75 SW rep (Alliance only)
+[51811]={2157},		  		  --Trapped Tortollans -- gives 75 Honorbound rep (Horde only)
+[52200]={2162},		  		  --Turtle Tactics -- gives 75 SW rep (Alliance only)
+[52209]={2157},		  		  --Turtle Tactics -- gives 75 Honorbound rep (Horde only)
+[52432]={2162, 2157},   	  --Unrelenting Squall -- Gives 75 SW or HB rep
+[52301]={2162, 2157},   	  --Vinespeaker Ratha -- Gives 75 SW or HB rep
+[52300]={2162, 2157},   	  --Wagga Snarltusk -- Gives 75 SW or HB rep
+[52891]={2162},		  		  --Wendigo To Sleep -- gives 75 SW rep (Alliance only)
+[52299]={2162, 2157},   	  --Whiplash -- Gives 75 SW or HB rep
+[52459]={2162, 2157},   	  --Whirlwing -- Gives 75 SW or HB rep
+[50993]={2162},		  		  --Work Order: Coarse Leather -- gives 75 SW rep (Alliance only)
+[52415]={2162},		  		  --Work Order: Coarse Leather Barding -- gives 75 SW rep (Alliance only)
+[52367]={2162},		  		  --Work Order: Electroshock Mount Motivator -- gives 75 SW rep (Alliance only)
+[52353]={2162},		  		  --Work Order: Enchant Ring - Seal of Haste -- gives 75 SW rep (Alliance only)
+[52347]={2162},		  		  --Work Order: Honey-Glazed Haunches -- gives 75 SW rep (Alliance only)
+[52344]={2162},		  		  --Work Order: Kul Tiramisu -- gives 75 SW rep (Alliance only)
+[52332]={2162},		  		  --Work Order: Lightfoot Potion -- gives 75 SW rep (Alliance only)
+[50996]={2162},		  		  --Work Order: Mistscale -- gives 75 SW rep (Alliance only)
+[52345]={2162},		  		  --Work Order: Ravenberry Tarts -- gives 75 SW rep (Alliance only)
+[50981]={2162},		  		  --Work Order: Riverbud -- gives 75 SW rep (Alliance only)
+[52346]={2162},		  		  --Work Order: Sailor's Pie -- gives 75 SW rep (Alliance only)
+[50982]={2162},		  		  --Work Order: Star Moss -- gives 75 SW rep (Alliance only)
+[50989]={2162},		  		  --Work Order: Storm Silver Ore -- gives 75 SW rep (Alliance only)
+[50997]={2162},		  		  --Work Order: Tidespray Linen -- gives 75 SW rep (Alliance only)
+[52352]={2162, 2157}   	 	  --Zeritarj -- Gives 75 SW or HB rep
+}
+
+
+local TiragardeSoundQuests = {
+[50322]={2160},		  	  	  --A Feathery Fad -- gives 75 PA rep (Alliance only)
+[51385]={2160},		  	  	  --A Supply of Stingers -- gives 75 PA rep (Alliance only)
+[51610]={2160, 2157},     	  --Adhara White -- Gives 75 PA or HB rep
+[52047]={2160},		  	  	  --Against the Storm -- gives 75 PA rep (Alliance only)
+[52057]={2157},		  	 	  --Against the Storm -- gives 75 Honorbound rep (Horde only)
+[51225]={2160},		  		  --Albatrocity -- gives 75 PA rep (Alliance only)
+[51653]={2160, 2157},   	  --Auditor Dolp -- Gives 75 PA or HB rep
+[52869]={2160, 2157, 2164},   --Azerite Empowerment (Alchemist Pitts) -- Gives 125 CoA rep and 75 PA or HB rep
+[51586]={2160, 2157, 2164},   --Azerite Empowerment (Tidesage Bankson) -- Gives 125 CoA rep and 75 PA or HB rep
+[51584]={2160, 2157, 2164},   --Azerite Madness -- Gives 125 CoA rep and PA SW or HB rep
+[52874]={2160, 2157, 2164},   --Azerite Mining -- Gives 125 CoA rep and PA SW or HB rep
+[51581]={2160, 2157, 2164},   --Azerite Mining -- Gives 125 CoA rep and PA SW or HB rep
+[51583]={2160, 2157, 2164},   --Azerite Wounds -- Gives 125 CoA rep and PA SW or HB rep
+[51652]={2160, 2157},   	  --Barman Bill -- Gives 75 PA or HB rep
+[51666]={2160, 2157},   	  --Bashmu -- Gives 75 PA or HB rep
+[51638]={2160, 2157, 2163},   --Beachhead -- Gives 175 TS rep and 75 PA or HB rep (Southeast Tiragarde Sound)
+[50296]={2160},		  	  	  --Billy Goat Barber -- gives 75 PA rep (Alliance only)
+[51671]={2157},		  	 	  --Billy Goat Barber -- gives 75 Honorbound rep (Horde only)
+[51669]={2160, 2157},   	  --Black-Eyed Bart -- Gives 75 PA or HB rep
+[51841]={2160, 2157},   	  --Blackthorne -- Gives 75 PA or HB rep
+[51613]={2160, 2157},   	  --Bloodmaw -- Gives 75 PA or HB rep
+[52755]={2157},		  	 	  --Bringing the Heat -- gives 75 Honorbound rep (Horde only)
+[51665]={2160, 2157},   	  --Broodmother Razora -- Gives 75 PA or HB rep
+[51848]={2160, 2157},   	  --Captain Wintersail -- Gives 75 PA or HB rep
+[51842]={2160, 2157},   	  --Carla Smirk -- Gives 75 PA or HB rep
+[51405]={2160},		  	  	  --Corruption in the Bay -- gives 75 PA rep (Alliance only)
+[50234]={2160},		  	  	  --Crews of Freehold -- gives 75 PA rep (Alliance only)
+[51647]={2157},		  	 	  --Crews of Freehold -- gives 75 Honorbound rep (Horde only)
+[51579]={2160},		  	  	  --Dark Ranger Clea -- gives 75 PA rep (Alliance only)
+[51577]={2160},		  	  	  --Defending the Academy -- gives 75 PA rep (Alliance only)
+[51311]={2160},		  	  	  --Energizing Extract -- gives 75 PA rep (Alliance only)
+[51284]={2160},		  	  	  --Falcon Hunt -- gives 75 PA rep (Alliance only)
+[50776]={2160},		  	  	  --False Prophets -- gives 75 PA rep (Alliance only)
+[52144]={2160},		  	  	  --Foundry Meltdown -- gives 75 PA rep (Alliance only)
+[53076]={2157},		  	 	  --Foundry Meltdown -- gives 75 Honorbound rep (Horde only)
+[51654]={2160, 2157},   	  --Fowlmouth -- Gives 75 PA or HB rep
+[51662]={2160, 2157},   	  --Foxhollow Skyterror -- Gives 75 PA or HB rep
+[53188]={2160},		  		  --Frozen Freestyle -- gives 75 PA rep (Alliance only)
+[51611]={2160, 2157},   	  --Ghost of the Deep -- Gives 75 PA or HB rep
+[52120]={2160},		  		  --Gnomish Azerite Extraction -- gives 75 PA rep (Alliance only)
+[52119]={2157},		  		  --Goblin Azerite Extraction -- gives 75 Honorbound rep (Horde only)
+[52757]={2157},		  		  --Grimestone Crimes -- gives 75 Honorbound rep (Horde only)
+[51317]={2160},		  		  --Grounding the Grimestone -- gives 75 PA rep (Alliance only)
+[50299]={2160},		  		  --Gryphon Wranglin' -- gives 75 PA rep (Alliance only)
+[51844]={2160, 2157},   	  --Gulliver -- Gives 75 PA or HB rep
+[52167]={2160},		  		  --Hardcore Raiders -- gives 75 PA rep (Alliance only)
+[52145]={2160},		  		  --Heave-Ho! -- gives 75 PA rep (Alliance only)
+[51245]={2160},		  		  --I'm a Lumberjack and I'm Okay -- gives 75 PA rep (Alliance only)
+[51664]={2160, 2157},   	  --Kulett the Ornery -- Gives 75 PA or HB rep
+[52760]={2157},		  		  --Like Fish in a Barrel -- gives 75 Honorbound rep (Horde only)
+[50295]={2160},		  		  --Like Pulling Teeth -- gives 75 PA rep (Alliance only)
+[52805]={2157},		  		  --Like Pulling Teeth -- gives 75 Honorbound rep (Horde only)
+[52124]={2157},		  		  --Losers Weepers -- gives 75 Honorbound rep (Horde only)
+[51670]={2160, 2157},   	  --Lumbergrasp Sentinel -- Gives 75 PA or HB rep
+[51895]={2160, 2157},   	  --Maison the Portable -- Gives 75 PA or HB rep
+[51632]={2160, 2157, 2163},   --Make Loh Go -- Gives 175 TS rep and 75 PA or HB rep (Northern Tiragarde Sound)
+[51659]={2160, 2157},   	  --Merianae -- Gives 75 PA or HB rep
+[50315]={2160},		  		  --Not on the Itinerary -- gives 75 PA rep (Alliance only)
+[52430]={2160, 2157},   	  --Not So Bad Down Here -- Gives 75 PA or HB rep -- Battle pet (Kwint)
+[51843]={2160, 2157},   	  --P4-N73R4 -- Gives 75 PA or HB rep
+[51660]={2160, 2157},   	  --Pack Leader Asenya -- Gives 75 PA or HB rep
+[51462]={2157},		  		  --Paratroopers -- gives 75 Honorbound rep (Horde only)
+[51092]={2160},		  		  --Picturesque Boralus -- gives 75 PA rep (Alliance only)
+[50324]={2160},		  		  --Picturesque Fizzsprings Resort -- gives 75 PA rep (Alliance only)
+[51090]={2160},		  		  --Picturesque Norwington Estate -- gives 75 PA rep (Alliance only)
+[51646]={2157},		  		  --Polly Want a Cracker? -- gives 75 Honorbound rep (Horde only)
+[50164]={2160},		  		  --Polly Want a Cracker? -- gives 75 PA rep (Alliance only)
+[51661]={2160, 2157},   	  --Raging Swell -- Gives 75 PA or HB rep
+[51890]={2160, 2157},   	  --Ranja the Last Chillpaw -- Gives 75 PA or HB rep
+[51580]={2157},		  		  --Rear Admiral Hainsworth -- gives 75 Honorbound rep (Horde only)
+[51566]={2160, 2157},   	  --Resurgence of the Beast -- Gives 75 PA or HB rep -- MIGHT be Alliance only?
+[51656]={2160, 2157},   	  --Saurolisk Tamer Mugg -- Gives 75 PA or HB rep
+[51893]={2160, 2157},   	  --Sawtooth -- Gives 75 PA or HB rep
+[51626]={2160, 2157, 2163},   --Shell Game -- Gives 175 TS rep and 75 PA or HB rep (Central Tiragarde Sound)
+[51892]={2160, 2157},   	  --Shiverscale the Toxic -- Gives 75 PA or HB rep
+[53331]={2160},		  		  --Show-Off -- gives 75 PA rep (Alliance only)
+[51463]={2157},		  		  --Sky Drop Rescue -- gives 75 Honorbound rep (Horde only)
+[53189]={2160},		  		  --Slippery Slopes -- gives 75 PA rep (Alliance only)
+[52143]={2160},		  		  --Smaller Haulers -- gives 75 PA rep (Alliance only)
+[50977]={2160},		  		  --Smuggler Shakedown -- gives 75 PA rep (Alliance only)
+[52756]={2157},		  		  --Snow Way Out -- gives 75 Honorbound rep (Horde only)
+[52804]={2157},		  		  --Something Stirs in the Depths -- gives 75 Honorbound rep (Horde only)
+[50421]={2160},		  		  --Sparring on the Spar -- gives 75 PA rep (Alliance only)
+[51651]={2160, 2157},   	  --Squacks -- Gives 75 PA or HB rep
+[51839]={2160, 2157},   	  --Squirgle of the Depths -- Gives 75 PA or HB rep
+[51388]={2160},		  		  --Stopping the Infestation -- gives 75 PA rep (Alliance only)
+[52751]={2160, 2157},   	  --Strange Looking Dogs -- Gives 75 PA or HB rep -- Battle pet (Burly)
+[51024]={2159},		  		  --Supplies Needed: Akunda's Bite -- gives 75 7L rep (Alliance only)
+[51028]={2159},		  		  --Supplies Needed: Blood-Stained Bone -- gives 75 7L rep (Alliance only)
+[51029]={2159},		  		  --Supplies Needed: Calcified Bone -- gives 75 7L rep (Alliance only)
+[51030]={2159},		  		  --Supplies Needed: Coarse Leather -- gives 75 7L rep (Alliance only)
+[51035]={2159},		  		  --Supplies Needed: Deep Sea Satin -- gives 75 7L rep (Alliance only)
+[52375]={2159},		  		  --Supplies Needed: Great Sea Catfish -- gives 75 7L rep (Alliance only)
+[51033]={2159},		  		  --Supplies Needed: Mistscale -- gives 75 7L rep (Alliance only)
+[51017]={2159},		  		  --Supplies Needed: Monelite Ore -- gives 75 7L rep (Alliance only)
+[52379]={2159},		  		  --Supplies Needed: Redtail Loach -- gives 75 7L rep (Alliance only)
+[51022]={2159},		  		  --Supplies Needed: Riverbud -- gives 75 7L rep (Alliance only)
+[52376]={2159},		  		  --Supplies Needed: Sand Shifter -- gives 75 7L rep (Alliance only)
+[51027]={2159},		  		  --Supplies Needed: Sea Stalk -- gives 75 7L rep (Alliance only)
+[51032]={2159},		  		  --Supplies Needed: Shimmerscale -- gives 75 7L rep (Alliance only)
+[51026]={2159},		  		  --Supplies Needed: Siren's Pollen -- gives 75 7L rep (Alliance only)
+[52378]={2159},		  		  --Supplies Needed: Slimy Mackerel -- gives 75 7L rep (Alliance only)
+[51023]={2159},		  		  --Supplies Needed: Star Moss -- gives 75 7L rep (Alliance only)
+[51021]={2159},		  		  --Supplies Needed: Storm Silver Ore -- gives 75 7L rep (Alliance only)
+[51031]={2159},		  		  --Supplies Needed: Tempest Hide -- gives 75 7L rep (Alliance only)
+[51034]={2159},		  		  --Supplies Needed: Tidespray Linen -- gives 75 7L rep (Alliance only)
+[52377]={2160},		  		  --Supplies Needed: Tiragarde Perch -- gives 75 PA rep (Alliance only) --DOUBLE CHECK WHEN POSSIBLE
+[51025]={2159},		  		  --Supplies Needed: Winter's Kiss -- gives 75 7L rep (Alliance only)
+[52159]={2160},		  		  --Swab This! -- gives 75 PA rep (Alliance only)
+[53196]={2157},		  		  --Swab This! -- gives 75 Honorbound rep (Horde only)
+[51891]={2160, 2157},   	  --Sythian the Swift -- Gives 75 PA or HB rep
+[50792]={2160},		  		  --Taking Bribes -- gives 75 PA rep (Alliance only)
+[51849]={2160, 2157},   	  --Tempestria -- Gives 75 PA or HB rep
+[51894]={2160, 2157},   	  --Tentulos the Drifter -- Gives 75 PA or HB rep
+[51655]={2160, 2157},   	  --Teres -- Gives 75 PA or HB rep
+[52471]={2160, 2157},   	  --That's a Big Carcass -- Gives 75 PA or HB rep -- Battle pet (Delia Hanako)
+[51241]={2160},		  		  --The Bear Witch Project -- gives 75 PA rep (Alliance only)
+[51406]={2160},		  		  --The Lord's Hunt -- gives 75 PA rep (Alliance only)
+[50767]={2160},		  		  --The Scrimshaw Gang -- gives 75 PA rep (Alliance only)
+[51578]={2157},		  		  --The Sea Runs Red -- gives 75 Honorbound rep (Horde only)
+[52010]={2160},		  		  --The Tendrils of Fate -- gives 75 PA rep (Alliance only)
+[52056]={2157},		  		  --The Tendrils of Fate -- gives 75 Honorbound rep (Horde only)
+[52163]={2160, 2157},   	  --The Winged Typhoon -- Gives 75 PA or HB rep -- World Boss (Azurethos)
+[51622]={2157},		  		  --Tidal Teachings -- gives 75 Honorbound rep (Horde only)
+[51621]={2160},		  		  --Tidal Teaching -- gives 75 PA rep (Alliance only)
+[51847]={2160, 2157},   	  --Tort Jaw -- Gives 75 PA or HB rep
+[53078]={2157},		  		  --Treasure in the Tides -- gives 75 Honorbound rep (Horde only)
+[52155]={2160},		  		  --Treasure in the Tides -- gives 75 PA rep (Alliance only)
+[53346]={2160},		  		  --Trogg Tromping -- gives 75 PA rep (Alliance only)
+[51657]={2160, 2157},   	  --Twin-Hearted Construct -- Gives 75 PA or HB rep
+[52455]={2160, 2157},   	  --Unbreakable -- Gives 75 PA or HB rep -- Battle pet (Chitara)
+[52752]={2157},		  		  --Vigilant Lookouts -- gives 75 Honorbound rep (Horde only)
+[50958]={2160},		  		  --Watch Your Wallets -- gives 75 PA rep (Alliance only)
+[51758]={2160},		  		  --Weapons Shipment -- gives 75 PA rep (Alliance only)
+[50983]={2160},		  		  --Work Order: Akunda's Bite -- gives 75 PA rep (Alliance only)
+[52423]={2160},		  		  --Work Order: Battle Flag: Phalanx Defense -- gives 75 PA rep (Alliance only)
+[50992]={2160},		  		  --Work Order: Calcified Bone -- gives 75 PA rep (Alliance only)
+[52389]={2160},		  		  --Work Order: Contract: Proudmoore Admiralty -- gives 75 PA rep (Alliance only)
+[52368]={2159},		  		  --Work Order: Crow's Nest Scope -- gives 75 7L rep (Alliance only)
+[50998]={2160},		  		  --Work Order: Deep Sea Satin -- gives 75 PA rep (Alliance only)
+[52331]={2159},		  		  --Work Order: Demitri's Draught of Deception -- gives 75 7L rep (Alliance only)
+[52355]={2160},		  		  --Work Order: Enchant Weapon: Coastal Surge -- gives 75 PA rep (Alliance only)
+[52356]={2160},		  		  --Work Order: Enchant Weapon: Torrent of Elements -- gives 75 PA rep (Alliance only)
+[52363]={2159},		  		  --Work Order: Incendiary Ammunition -- gives 75 7L rep (Alliance only)
+[52405]={2160},		  		  --Work Order: Kubiline -- gives 75 PA rep (Alliance only)
+[52340]={2159},		  		  --Work Order: Monelite-Hardened Hoofplates -- gives 75 7L rep (Alliance only)
+[52339]={2159},		  		  --Work Order: Monelite-Hardened Stirrups -- gives 75 7L rep (Alliance only)
+[52333]={2160},		  		  --Work Order: Sea Mist Potion -- gives 75 PA rep (Alliance only)
+[52417]={2160},		  		  --Work Order: Shimmerscale Diving Helmet -- gives 75 PA rep (Alliance only)
+[52416]={2160},		  		  --Work Order: Shimmerscale Diving Suit -- gives 75 PA rep (Alliance only)
+[52404]={2160},		  		  --Work Order: Solstone -- gives 75 PA rep (Alliance only)
+[52392]={2159},		  		  --Work Order: Ultramarine Pigment -- gives 75 7L rep (Alliance only)
+[50984]={2160}		  		  --Work Order: Winter's Kiss -- gives 75 PA rep (Alliance only)
+}
+
+
+
 function GetQuestReps(qID, mID)
 	if(UnitFactionGroup("player") == "Horde") then
 		if(mID == 862) then	--Zuldazar
@@ -716,15 +1026,39 @@ function GetQuestReps(qID, mID)
 		elseif(mID == 896) then	--Drustvar
 			for q, reps in pairs(DrustvarQuests) do
 				if(q == qID) then
+					--print(GetQuestLink(qID));
 					if(type(reps) == "table") then
 						for k, v in pairs(reps) do
 							AddHordeRepToSum(v);
 						end
 					end
-					nQuests = nQuests + 1;
+					dQuests = dQuests + 1;
+				end
+			end
+		elseif(mID == 942) then	--Stormsong Valley
+			for q, reps in pairs(StormsongValleyQuests) do
+				if(q == qID) then
+					if(type(reps) == "table") then
+						for k, v in pairs(reps) do
+							AddHordeRepToSum(v);
+						end
+					end
+					sQuests = sQuests + 1;
+				end
+			end
+		elseif(mID == 895) then	--Tiragarde Sound
+			for q, reps in pairs(TiragardeSoundQuests) do
+				if(q == qID) then
+					if(type(reps) == "table") then
+						for k, v in pairs(reps) do
+							AddHordeRepToSum(v);
+						end
+					end
+					tQuests = tQuests + 1;
 				end
 			end
 		end
+	--*******************************ALLIANCE SIDE************************************
 	elseif(UnitFactionGroup("player") == "Alliance") then
 		if(mID == 862) then	--Zuldazar
 			for q, reps in pairs(ZuldazarQuests) do
@@ -751,6 +1085,7 @@ function GetQuestReps(qID, mID)
 		elseif(mID == 863) then	--Nazmir
 			for q, reps in pairs(NazmirQuests) do
 				if(q == qID) then
+					--print(GetQuestLink(qID));
 					if(type(reps) == "table") then
 						for k, v in pairs(reps) do
 							AddAllianceRepToSum(v);
@@ -767,7 +1102,30 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
-					nQuests = nQuests + 1;
+					dQuests = dQuests + 1;
+				end
+			end
+		elseif(mID == 942) then	--Stormsong Valley
+			for q, reps in pairs(StormsongValleyQuests) do
+				if(q == qID) then
+					--print(GetQuestLink(qID));
+					if(type(reps) == "table") then
+						for k, v in pairs(reps) do
+							AddAllianceRepToSum(v);
+						end
+					end
+					sQuests = sQuests + 1;
+				end
+			end
+		elseif(mID == 895) then	--Tiragarde Sound
+			for q, reps in pairs(TiragardeSoundQuests) do
+				if(q == qID) then
+					if(type(reps) == "table") then
+						for k, v in pairs(reps) do
+							AddAllianceRepToSum(v);
+						end
+					end
+					tQuests = tQuests + 1;
 				end
 			end
 		end
