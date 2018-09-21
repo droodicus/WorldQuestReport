@@ -49,7 +49,7 @@ f:SetScript("OnEvent", function(f, event)
 			DRUSTVAR = 896
 			TIRAGARDE_SOUND = 895
 			]]
-			mapID = 947;
+			mapID = 875;
 
 			--mapname = C_Map.GetMapInfo(mapID).name;
 			--print("Map: ", mapname, ". MapID: ", mapID);
@@ -59,7 +59,9 @@ f:SetScript("OnEvent", function(f, event)
 			if(UnitFactionGroup("player") == "Horde") then
 				print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
 				ParseQuests(875);
+				print("MAGNEH AFTER ZANDALAR: ", CoA);
 				ParseQuests(876);
+				print("MAGNEH AFTER KUL TIRAS: ", CoA);
 				CheckContracts();
 				OutputHordeRepSums();
 				print("Num WQs active :", numWQs);
@@ -137,15 +139,15 @@ end
 			]]
 function ParseQuests(mID)
 	mapname = C_Map.GetMapInfo(mID).name;
-	--print("Processing map: ", mapname, ". MapID: ", mID);
+	print("Processing map: ", mapname, " MapID: ", mID);
 	mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mID);
 
 
 	if mapQuests then
 		for i, info in ipairs(mapQuests) do
 				if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
-					--print(i, "'s Quest ID: ", info.questId);
-					numWQs = numWQs + 1;
+					--print(i, ", ", GetQuestLink(info.questId), "'s Quest ID: ", info.questId);
+					--numWQs = numWQs + 1;
 					--print(GetQuestLink(info.questId), ", questID: ", info.questId, ", mapID: ", info.mapID);
 					GetQuestReps(info.questId, info.mapID); --See function below for details
 				--else
@@ -161,10 +163,6 @@ function ParseQuests(mID)
 	--print("STORMSONG QUEST COUNT: ", sQuests);
 	--print("TIRAGARDE QUEST COUNT: ", tQuests);
 end
-
--- local ZuldazarQuests = {
--- [52923]={2103, 2159}		  --Add More to the Collection -- Gives 75 ZE  or 7th L rep
--- }
 
 
 local ZuldazarQuests = {
@@ -312,9 +310,9 @@ local VoldunQuests = {
 [52798]={2158},				  --A few More Charges -- gives 75 Vol rep (Horde only)
 [49013]={2158},				  --A Jolt of Power -- gives 75 Vol rep (Horde only)
 [51238]={2158},		  		  --Abandoned  in the Burrows -- gives 75 Vol rep (Horde only)
-[51105]={2158, 2159, 2164},	  --Ak'tar -- gives 75 Vol or 7th L rep
-[51095]={2158, 2159, 2164},	  --Ashmane -- gives 75 Vol or 7th L rep
-[51096]={2158, 2159, 2164},	  --Azer'tor -- gives 75 Vol or 7th L rep
+[51105]={2158, 2159},		  --Ak'tar -- gives 75 Vol or 7th L rep
+[51095]={2158, 2159},	   	  --Ashmane -- gives 75 Vol or 7th L rep
+[51096]={2158, 2159},		  --Azer'tor -- gives 75 Vol or 7th L rep
 [52849]={2158, 2159, 2164},	  --Azerite Empowerment (Warlord Dagu) -- Gives 125 CoA rep and 75 Vol or 7th L rep
 [51185]={2158, 2159, 2164},	  --Azerite Empowerment (Skithis the Infused) -- Gives 125 CoA rep and 75 Vol or 7th L rep
 [51422]={2158, 2159, 2164},   --Azerite Madness(Vol'dun) -- Gives 125 CoA rep and 75  ZE rep 
@@ -353,6 +351,7 @@ local VoldunQuests = {
 [51228]={2158},		 		  --Instant Meat, Ready to Eat -- gives 75 Vol rep (Horde only)
 [51239]={2158},		 		  --Instructions Not Included -- gives 75 Vol rep (Horde only) 
 [51181]={2158},		 		  --Instructions Not Included -- gives 75 Vol rep (Horde only) 
+[51174]={2158},		 		  --Instructions Not Included -- gives 75 Vol rep (Horde only) 
 [51928]={2159},		 		  --Instructions Not Included -- gives 75 7th L rep (Alliance only)
 [51100]={2158, 2159},		  --Jumbo Sandsnapper -- gives 75 Vol or 7th L rep
 [51125]={2158, 2159},		  --Jungleweb Hunter -- gives 75 Vol or 7th L rep
@@ -998,17 +997,22 @@ function GetQuestReps(qID, mID)
 							AddHordeRepToSum(v);
 						end
 					end
+					--print(GetQuestLink(qID), "'s quest ID: ", qID);
+					numWQs = numWQs + 1;
 					zQuests = zQuests + 1;
 				end
 			end
 		elseif(mID == 864) then	--Vol'dun
 			for q, reps in pairs(VoldunQuests) do
 				if(q == qID) then
+					--print(GetQuestLink(qID));
 					if(type(reps) == "table") then
 						for k, v in pairs(reps) do
-							AddHordeRepToSum(v);
+							AddHordeRepToSum(v, qID);
 						end
 					end
+					--print(GetQuestLink(qID), "'s quest ID: ", qID);
+					numWQs = numWQs + 1;
 					vQuests = vQuests + 1;
 				end
 			end
@@ -1020,6 +1024,8 @@ function GetQuestReps(qID, mID)
 							AddHordeRepToSum(v);
 						end
 					end
+					--print(GetQuestLink(qID), "'s quest ID: ", qID);
+					numWQs = numWQs + 1;
 					nQuests = nQuests + 1;
 				end
 			end
@@ -1032,6 +1038,7 @@ function GetQuestReps(qID, mID)
 							AddHordeRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					dQuests = dQuests + 1;
 				end
 			end
@@ -1043,6 +1050,7 @@ function GetQuestReps(qID, mID)
 							AddHordeRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					sQuests = sQuests + 1;
 				end
 			end
@@ -1054,6 +1062,7 @@ function GetQuestReps(qID, mID)
 							AddHordeRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					tQuests = tQuests + 1;
 				end
 			end
@@ -1068,6 +1077,7 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					zQuests = zQuests + 1;
 				end
 			end
@@ -1079,6 +1089,7 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					vQuests = vQuests + 1;
 				end
 			end
@@ -1091,6 +1102,7 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					nQuests = nQuests + 1;
 				end
 			end
@@ -1102,6 +1114,7 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					dQuests = dQuests + 1;
 				end
 			end
@@ -1114,6 +1127,7 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					sQuests = sQuests + 1;
 				end
 			end
@@ -1125,6 +1139,7 @@ function GetQuestReps(qID, mID)
 							AddAllianceRepToSum(v);
 						end
 					end
+					numWQs = numWQs + 1;
 					tQuests = tQuests + 1;
 				end
 			end
