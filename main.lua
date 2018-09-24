@@ -66,6 +66,7 @@ f:SetScript("OnEvent", function(f, event)
 				CheckContracts();
 				OutputHordeRepSums();
 				print("Num WQs active :", numWQs);
+				OutputGoldTotal();
 			--Alliance
 			elseif(UnitFactionGroup("player") == "Alliance") then
 				print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
@@ -74,6 +75,7 @@ f:SetScript("OnEvent", function(f, event)
 				CheckContracts();
 				OutputAllianceRepSums();
 				print("Num WQs active :", numWQs);
+				OutputGoldTotal();
 			end
 		else
 			print("Level up scrub");
@@ -83,48 +85,6 @@ end)
 
 
 print("WQ Report active!");
-
---[[ QUEST REWARDS
-GetNumQuestLogRewards:
-Gold reward: returns 0
-Gear reward: returns 1
-Rep token reward: 0
-Pet charm reward: 1
-
-GetNumQuestLogRewardCurrencies(QuestID) returns a non-zero number if the quest reward is a rep token
-GetQuestLogRewardMoney(QuestID) returns the amount of money a WQ rewards (in copper)
--EXAMPLE: if it retursn 842500, that's 84 gold, 25 silver
-gold = money/10000;
-silver = (money - (gold * 10000)) / 100;
-print("Reward= ", gold, " gold, ", silver, " silver");
---therefore, 100 copper = 1 silver, 10,000 copper = 1 gold
-
-Azerite currency ID = 1553
-
-QID = 51890
-local numQuestCurrencies = GetNumQuestLogRewardCurrencies(QID)
-if numQuestCurrencies > 0 then
-	for currencyNum = 1, numQuestCurrencies do 
-		local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(currencyNum, QID)
-		if currencyID == 1553 then
-			print(numItems);
-		end
-	end
-end
-
-
-function CheckMoney()
-	questMoney = GetQuestLogRewardMoney(51405);
-	print("Unprocessed money= ", questMoney);
-	gold = questMoney/10000;
-	--print("Gold: ", gold);
-	gold = math.floor(gold);
-	silver = (questMoney - (gold * 10000)) / 100;
-	print("Gold: ", gold);
-	print("Silver: ", silver);
-	print("Reward= ", gold, " gold, ", silver, " silver");
-end
-]]
 
 --mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID);
 --[[ MAP ID'S:
@@ -147,12 +107,9 @@ function ParseQuests(mID)
 	if mapQuests then
 		for i, info in ipairs(mapQuests) do
 				if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
-					--print(i, ", ", GetQuestLink(info.questId), "'s Quest ID: ", info.questId);
-					--numWQs = numWQs + 1;
 					--print(GetQuestLink(info.questId), ", questID: ", info.questId, ", mapID: ", info.mapID);
-					GetQuestReps(info.questId, info.mapID); --See function below for details
-				--else
-				--	print(info.questId, " did not pass correctly");
+					GetQuestReps(info.questId, info.mapID);
+					CheckMoney(info.questId);
 				end
 		end
 	end
@@ -834,7 +791,6 @@ local StormsongValleyQuests = {
 [52352]={2162, 2157}   	 	  --Zeritarj -- Gives 75 SW or HB rep
 }
 
-
 local TiragardeSoundQuests = {
 [50322]={2160},		  	  	  --A Feathery Fad -- gives 75 PA rep (Alliance only)
 [51385]={2160},		  	  	  --A Supply of Stingers -- gives 75 PA rep (Alliance only)
@@ -991,7 +947,28 @@ local TiragardeSoundQuests = {
 [50984]={2160}		  		  --Work Order: Winter's Kiss -- gives 75 PA rep (Alliance only)
 }
 
+function CheckMoney(questID)
+	questMoney = GetQuestLogRewardMoney(questID);
+	if(questMoney ~= 0) then
+		--print("Unprocessed money= ", questMoney);
+		gold = questMoney/10000;
+		--print("Gold: ", gold);
+		gold = math.floor(gold);
+		silver = (questMoney - (gold * 10000)) / 100;
+		--print(GetQuestLink(questID), "rewards", gold, "gold,", silver, "silver");
+		totalMoney = totalMoney + questMoney;
+		--print("NEW TOTAL:", totalMoney);
+	end
+end
 
+function OutputGoldTotal()	
+	--print("Unprocessed money= ", totalMoney);
+	gold = totalMoney/10000;
+	--print("Gold: ", gold);
+	gold = math.floor(gold);
+	silver = (totalMoney - (gold * 10000)) / 100;
+	print("TOTAL:", gold, "gold,", silver, "silver");
+end
 
 function GetQuestReps(qID, mID)
 	if(UnitFactionGroup("player") == "Horde") then
@@ -1267,4 +1244,34 @@ function CheckContracts()
 		print("NO VALID CONTRACT DETECTED");
 	end
 end
+
+--[[ QUEST REWARDS
+GetNumQuestLogRewards:
+Gold reward: returns 0
+Gear reward: returns 1
+Rep token reward: 0
+Pet charm reward: 1
+
+GetNumQuestLogRewardCurrencies(QuestID) returns a non-zero number if the quest reward is a rep token
+GetQuestLogRewardMoney(QuestID) returns the amount of money a WQ rewards (in copper)
+-EXAMPLE: if it retursn 842500, that's 84 gold, 25 silver
+gold = money/10000;
+silver = (money - (gold * 10000)) / 100;
+print("Reward= ", gold, " gold, ", silver, " silver");
+--therefore, 100 copper = 1 silver, 10,000 copper = 1 gold
+
+Azerite currency ID = 1553
+
+QID = 51890
+local numQuestCurrencies = GetNumQuestLogRewardCurrencies(QID)
+if numQuestCurrencies > 0 then
+	for currencyNum = 1, numQuestCurrencies do 
+		local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(currencyNum, QID)
+		if currencyID == 1553 then
+			print(numItems);
+		end
+	end
+end
+
+]]
 
