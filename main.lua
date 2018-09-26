@@ -24,20 +24,31 @@ f:SetScript("OnEvent", function(f, event)
 			--initialization of currency total variables
 			totalAzerite = 0;
 			totalMoney = 0;
+			totalWarResources = 0;
 
 			--Horde Rep total initialization and ID indices 
 			CoA = 0; --Champions of Azeroth rep (ID = 2164)
+			tokenCoA = 0;
 			TE = 0;  --Talanji's Expedition rep (ID = 2156)
+			tokenTE = 0;
 			HB = 0;  --The Honorbound rep 		(ID = 2157)
+			tokenHB = 0;
 			TS = 0;  --Tortollan Seekers rep 	(ID = 2163)
+			tokenTS = 0;
 			Vol = 0; --Voldunai rep				(ID = 2158)
+			tokenVol = 0;
 			ZE = 0;  --Zandalari Empire rep 	(ID = 2103)
-
+			tokenZE = 0;
+			
 			--Alliance Rep total initialization and ID indices 
 			OoE = 0; --Order of Embers rep	    (ID = 2161)
+			tokenOoE = 0;
 			SL = 0; --7th Legion rep 			(ID = 2159)
+			tokenSL = 0;
 			PA = 0; --Proudmoore Admiralty rep  (ID = 2160)
-			SW = 0; --Storm's Wake rep 			(ID = 2162)			
+			tokenPA = 0;
+			SW = 0; --Storm's Wake rep 			(ID = 2162)		
+			tokenSW = 0;
 			
 			--[[ MAP ID'S:
 			AZEROTH = 947
@@ -50,12 +61,7 @@ f:SetScript("OnEvent", function(f, event)
 			DRUSTVAR = 896
 			TIRAGARDE_SOUND = 895
 			]]
-			mapID = 875;
-
-			--mapname = C_Map.GetMapInfo(mapID).name;
-			--print("Map: ", mapname, ". MapID: ", mapID);
-			--mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID);
-			
+			--CheckAzerite(52169);
 			--Horde
 			if(UnitFactionGroup("player") == "Horde") then
 				print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
@@ -64,18 +70,22 @@ f:SetScript("OnEvent", function(f, event)
 				ParseQuests(876);
 				--print("MAGNI COUNT AFTER KUL TIRAS AND ZANDALAR: ", magni);
 				CheckContracts();
+				AddTokens();
 				OutputHordeRepSums();
 				print("Num WQs active :", numWQs);
 				OutputGoldTotal();
+				OutputCurrencyTotals();
 			--Alliance
 			elseif(UnitFactionGroup("player") == "Alliance") then
 				print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
 				ParseQuests(875);
 				ParseQuests(876);
 				CheckContracts();
+				AddTokens();
 				OutputAllianceRepSums();
 				print("Num WQs active :", numWQs);
 				OutputGoldTotal();
+				OutputCurrencyTotals();
 			end
 		else
 			print("Level up scrub");
@@ -86,7 +96,6 @@ end)
 
 print("WQ Report active!");
 
---mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID);
 --[[ MAP ID'S:
 			AZEROTH = 947
 			ZANDALAR = 875
@@ -110,6 +119,7 @@ function ParseQuests(mID)
 					--print(GetQuestLink(info.questId), ", questID: ", info.questId, ", mapID: ", info.mapID);
 					GetQuestReps(info.questId, info.mapID);
 					CheckMoney(info.questId);
+					CheckCurrencies(info.questId);
 				end
 		end
 	end
@@ -230,6 +240,8 @@ local ZuldazarQuests = {
 [51081]={2103, 2159},		  --Syrawon the Dominus -- Gives 75 ZE  or 7th L rep
 [50867]={2103, 2159},		  --Tambano -- Gives 75 ZE  or 7th L rep
 [51494]={2103},		  		  --The Blood Gate -- gives 75 ZE rep (Horde only)
+[52169]={2103, 2159},		  --The Matriarch -- Gives 75 ZE  or 7th L rep  -- World Boss(Ji'arak)
+[52295]={2103, 2159},		  --The MOTHERLODE!!: Elementals on the Payroll -- Gives 75 ZE  or 7th L rep
 [52249]={2159},		  		  --The Shores of Xibala -- gives 75 7th L rep (Alliance only)
 [52248]={2103},		  		  --The Shores of Xibala -- gives 75 ZE rep (Horde only)
 [50850]={2103, 2159},		  --Tia'Kawan -- Gives 75 ZE  or 7th L rep
@@ -681,6 +693,7 @@ local StormsongValleyQuests = {
 [51901]={2162, 2157},   	  --Crushtacean -- Gives 75 SW or HB rep
 [51777]={2162, 2157},   	  --Dagrus the Scorned -- Gives 75 SW or HB rep
 [51778]={2162, 2157},   	  --Deepfang -- Gives 75 SW or HB rep
+[53317]={2162, 2157},   	  --Dense Storm Silver -- Gives 75 SW or HB rep
 [51996]={2157},		  		  --Earthcaller's Abode -- gives 75 Honorbound rep (Horde only)
 [51981]={2162},		  		  --Earthcaller's Abode -- gives 75 SW rep (Alliance only)
 [53027]={2162, 2157},   	  --Edge of Glory -- Gives 75 SW or HB rep
@@ -950,14 +963,7 @@ local TiragardeSoundQuests = {
 function CheckMoney(questID)
 	questMoney = GetQuestLogRewardMoney(questID);
 	if(questMoney ~= 0) then
-		--print("Unprocessed money= ", questMoney);
-		gold = questMoney/10000;
-		--print("Gold: ", gold);
-		gold = math.floor(gold);
-		silver = (questMoney - (gold * 10000)) / 100;
-		--print(GetQuestLink(questID), "rewards", gold, "gold,", silver, "silver");
 		totalMoney = totalMoney + questMoney;
-		--print("NEW TOTAL:", totalMoney);
 	end
 end
 
@@ -969,6 +975,105 @@ function OutputGoldTotal()
 	silver = (totalMoney - (gold * 10000)) / 100;
 	print("TOTAL:", gold, "gold,", silver, "silver");
 end
+
+function CheckCurrencies(questID)
+	local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
+	if numQuestCurrencies > 0 then
+		for currencyNum = 1, numQuestCurrencies do 
+			local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(currencyNum, questID)
+			--Azerite currency ID = 1553
+			if currencyID == 1553 then
+				--print(GetQuestLink(questID), " HAS AZERITE REWARD: ", numItems);
+				totalAzerite = totalAzerite + numItems;
+			--War Resources currency ID = 1560
+			elseif currencyID == 1560 then
+				--print(GetQuestLink(questID), " HAS WAR RESOURCES REWARD: ", numItems);
+				totalWarResources = totalWarResources + numItems;
+			
+			--Tortollan Seekers rep token ID = 1598
+			elseif currencyID == 1598 then
+				tokenTS = tokenTS + numItems;
+			--Champions of Azeroth rep token ID = 1579
+			elseif currencyID == 1579 then
+				tokenCoA = tokenCoA + numItems;
+			--Horde rep tokens
+			elseif(UnitFactionGroup("player") == "Horde") then
+				--Talanji's Expedition rep token ID = 1595
+				if currencyID == 1595 then
+					tokenTE = tokenTE + numItems;
+				--Honorbound rep token ID = 1600
+				elseif currencyID == 1600 then
+					tokenHB = tokenHB + numItems;
+				--Voldunai rep token ID = 1596
+				elseif currencyID == 1596 then
+					tokenVol = tokenVol + numItems;
+				--Zandalari Empire rep token ID = 1597
+				elseif currencyID == 1597 then
+					tokenZE = tokenZE + numItems;
+				end
+			elseif(UnitFactionGroup("player") == "Alliance") then
+				--Order of Embers rep token ID = 1592
+				if currencyID == 1592 then
+					tokenOoE = tokenOoE + numItems;
+				--7th Legion rep token ID = 1599
+				elseif currencyID == 1599 then
+					tokenSL = tokenSL + numItems;
+				--Proudmoore Admiralty rep token ID = 1593
+				elseif currencyID == 1593 then
+					tokenPA = tokenPA + numItems;
+				--Storm's Wake rep token ID = 1594
+				elseif currencyID == 1594 then
+					tokenSW = tokenSW + numItems;
+				end
+			end
+		end
+	end
+end
+
+function AddTokens()
+	if(UnitFactionGroup("player") == "Horde") then
+		if(tokenTE ~= 0) then
+			TE = TE + tokenTE;
+		end	
+		if(tokenHB ~= 0) then
+			HB = HB + tokenHB;
+		end
+		if(tokenVol ~= 0) then
+			Vol = Vol + tokenVol;
+		end		
+		if(tokenZE ~= 0) then
+			ZE = ZE + tokenZE;
+		end	
+	elseif(UnitFactionGroup("player") == "Alliance") then
+		if(tokenOoE ~= 0) then
+			OoE = OoE + tokenOoE;
+		end
+		if(tokenSL ~= 0) then
+			SL = SL + tokenSL;
+		end
+		if(tokenPA ~= 0) then
+			PA = PA + tokenPA;
+		end
+		if(tokenSW ~= 0) then
+			SW = SW + tokenSW;
+		end		
+	end
+	--Neutral reps
+	if(tokenCoA ~= 0) then
+			CoA = CoA + tokenCoA;
+			--print("Champions of Azeroth rep from tokens:", tokenCoA);
+	end	
+	if(tokenTS ~= 0) then
+		TS = TS + tokenTS;
+		--print("Tortollan Seekers rep from tokens:", tokenTS);
+	end
+end
+
+function OutputCurrencyTotals()
+	print("TOTAL AVAILABLE WQ AZERITE:", totalAzerite);
+	print("TOTAL AVAILABLE WQ WAR RESOURCES:", totalWarResources);
+end
+
 
 function GetQuestReps(qID, mID)
 	if(UnitFactionGroup("player") == "Horde") then
@@ -1107,7 +1212,7 @@ function GetQuestReps(qID, mID)
 		elseif(mID == 942) then	--Stormsong Valley
 			for q, reps in pairs(StormsongValleyQuests) do
 				if(q == qID) then
-					--print(GetQuestLink(qID));
+					--print(GetQuestLink(qID), "ID:", qID);
 					if(type(reps) == "table") then
 						for k, v in pairs(reps) do
 							AddAllianceRepToSum(v);
@@ -1173,43 +1278,91 @@ end
 
 function OutputHordeRepSums()	
 	if(CoA > 0) then
-		print("|cFF5DE7FC Champions of Azeroth potential rep: ", CoA);
+		if(tokenCoA ~= 0)then
+			print("|cFF5DE7FC Champions of Azeroth potential rep: ", CoA, "(", tokenCoA, "from tokens)");
+		else
+			print("|cFF5DE7FC Champions of Azeroth potential rep: ", CoA);
+		end
 	end
 	if(TE > 0) then
-		print("|cFFFF8411 Talanji's Expedition potential rep: ", TE);
+		if(tokenTE ~= 0) then
+			print("|cFFFF8411 Talanji's Expedition potential rep: ", TE, "(", tokenTE, "from tokens)");
+		else
+			print("|cFFFF8411 Talanji's Expedition potential rep: ", TE);
+		end
 	end
 	if(HB > 0) then
-		print("|cFFBA0707 The Honorbound potential rep: ", HB);
+		if(tokenHB ~= 0) then
+			print("|cFFBA0707 The Honorbound potential rep: ", HB, "(", tokenHB, "from tokens)");
+		else
+			print("|cFFBA0707 The Honorbound potential rep: ", HB);
+		end
 	end
 	if(TS > 0) then
-		print("|cFF31702A Tortollan Seekers potential rep: ", TS);
+		if(tokenTS ~= 0) then
+			print("|cFF31702A Tortollan Seekers potential rep: ", TS, "(", tokenTS, "from tokens)");
+		else
+			print("|cFF31702A Tortollan Seekers potential rep: ", TS);
+		end
 	end
 	if(Vol > 0) then
-		print("|cFF9B8204 Voldunai potential rep: ", Vol);
+		if(tokenVol ~= 0) then
+			print("|cFF9B8204 Voldunai potential rep: ", Vol, "(", tokenVol, "from tokens)");
+		else
+			print("|cFF9B8204 Voldunai potential rep: ", Vol);
+		end
 	end
 	if(ZE > 0) then
-		print("|cFF16027A Zandalari Empire potential rep: ", ZE);
+		if(tokenZE ~= 0) then
+			print("|cFF16027A Zandalari Empire potential rep: ", ZE, "(", tokenZE, "from tokens)");
+		else
+			print("|cFF16027A Zandalari Empire potential rep: ", ZE);
+		end
 	end
 end
 
 function OutputAllianceRepSums()
 	if(CoA > 0) then
-		print("|cFF5DE7FC Champions of Azeroth potential rep: ", CoA);
+		if(tokenCoA ~= 0)then
+			print("|cFF5DE7FC Champions of Azeroth potential rep: ", CoA, "(", tokenCoA, "from tokens)");
+		else
+			print("|cFF5DE7FC Champions of Azeroth potential rep: ", CoA);
+		end
 	end
 	if(OoE > 0) then
-		print("|cFFFF8411 Order of Embers potential rep: ", OoE);
+		if(tokenOoE ~= 0) then
+			print("|cFFFF8411 Order of Embers potential rep: ", OoE, "(", tokenOoE, "from tokens)");
+		else
+			print("|cFFFF8411 Order of Embers potential rep: ", OoE);
+		end
 	end
 	if(SL > 0) then
-		print("|cFFBA0707 7th Legion potential rep: ", SL);
+		if(tokenSL ~= 0) then
+			print("|cFFBA0707 7th Legion potential rep: ", SL, "(", tokenSL, "from tokens)");
+		else
+			print("|cFFBA0707 7th Legion potential rep: ", SL);
+		end
 	end
 	if(TS > 0) then
-		print("|cFF31702A Tortollan Seekers potential rep: ", TS);
+		if(tokenTS ~= 0) then
+			print("|cFF31702A Tortollan Seekers potential rep: ", TS, "(", tokenTS, "from tokens)");
+		else
+			print("|cFF31702A Tortollan Seekers potential rep: ", TS);
+		end
 	end
 	if(PA > 0) then
-		print("|cFF9B8204 Proudmoore Admiralty potential rep: ", PA);
+		if(tokenPA ~= 0) then
+			print("|cFF9B8204 Proudmoore Admiralty potential rep: ", PA, "(", tokenPA, "from tokens)");
+		else
+			print("|cFF9B8204 Proudmoore Admiralty potential rep: ", PA);
+		end
 	end
 	if(SW > 0) then
-		print("|cFFE0D500 Storm's Wake potential rep: ", SW);
+		if(tokenSW ~= 0) then
+			print("|cFFE0D500 Storm's Wake potential rep: ", SW, "(", tokenSW, "from tokens)");
+		else
+			print("|cFFE0D500 Storm's Wake potential rep: ", SW);
+		end
 	end
 end
 
@@ -1244,34 +1397,3 @@ function CheckContracts()
 		print("NO VALID CONTRACT DETECTED");
 	end
 end
-
---[[ QUEST REWARDS
-GetNumQuestLogRewards:
-Gold reward: returns 0
-Gear reward: returns 1
-Rep token reward: 0
-Pet charm reward: 1
-
-GetNumQuestLogRewardCurrencies(QuestID) returns a non-zero number if the quest reward is a rep token
-GetQuestLogRewardMoney(QuestID) returns the amount of money a WQ rewards (in copper)
--EXAMPLE: if it retursn 842500, that's 84 gold, 25 silver
-gold = money/10000;
-silver = (money - (gold * 10000)) / 100;
-print("Reward= ", gold, " gold, ", silver, " silver");
---therefore, 100 copper = 1 silver, 10,000 copper = 1 gold
-
-Azerite currency ID = 1553
-
-QID = 51890
-local numQuestCurrencies = GetNumQuestLogRewardCurrencies(QID)
-if numQuestCurrencies > 0 then
-	for currencyNum = 1, numQuestCurrencies do 
-		local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(currencyNum, QID)
-		if currencyID == 1553 then
-			print(numItems);
-		end
-	end
-end
-
-]]
-
