@@ -49,7 +49,7 @@ f:SetScript("OnEvent", function(f, event)
 			tokenPA = 0;
 			SW = 0; --Storm's Wake rep 			(ID = 2162)		
 			tokenSW = 0;
-			
+						
 			--[[ MAP ID'S:
 			AZEROTH = 947
 			ZANDALAR = 875
@@ -66,9 +66,7 @@ f:SetScript("OnEvent", function(f, event)
 			if(UnitFactionGroup("player") == "Horde") then
 				print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
 				ParseQuests(875);
-				--print("MAGNI COUNT AFTER ZANDALAR: ", magni);
 				ParseQuests(876);
-				--print("MAGNI COUNT AFTER KUL TIRAS AND ZANDALAR: ", magni);
 				CheckContracts();
 				AddTokens();
 				OutputHordeRepSums();
@@ -120,6 +118,7 @@ function ParseQuests(mID)
 					GetQuestReps(info.questId, info.mapID);
 					CheckMoney(info.questId);
 					CheckCurrencies(info.questId);
+					--CheckItemReward(info.questId);
 				end
 		end
 	end
@@ -262,6 +261,7 @@ local ZuldazarQuests = {
 [52395]={2103},		 		  --Work Order: Contract: Zandalari Empire -- gives 75 ZE rep (Horde only)
 [52374]={2103},		 		  --Work Order: Contract: Crow's Nest Scope -- gives 75 ZE rep (Horde only)
 [52335]={2103},		 		  --Work Order: Contract: Demitri's Draught of Deception -- gives 75 ZE rep (Horde only)
+[52335]={2157},		 		  --Work Order: Demitri's Draught of Deception -- gives 75 HB rep (Horde only)
 [52373]={2103},		 		  --Work Order: Electroshock Mount Motivator -- gives 75 ZE rep (Horde only)
 [52358]={2103},		 		  --Work Order: Enchant Ring: Seal of Haste -- gives 75 ZE rep (Horde only)
 [52359]={2103},		 		  --Work Order: Enchant Ring: Seal of Mastery -- gives 75 ZE rep (Horde only)
@@ -1028,6 +1028,33 @@ function CheckCurrencies(questID)
 			end
 		end
 	end
+end
+
+function CheckItemReward(questID)
+	local numQuestRewards = GetNumQuestLogRewards(questID)
+	if numQuestRewards > 0 then
+		local itemName, itemTexture, quantity, quality, isUsable, itemID = GetQuestLogRewardInfo(1, questID)
+		local _, itemLink, _, itemLevel, _, _, _, _, _, _, _, _, _ = GetItemInfo(itemID)
+		
+		i = Item:CreateFromItemID(itemID);
+		effectiveILvl, _, _ = GetDetailedItemLevelInfo(itemID);
+		
+		linkString = gsub(itemLink, "\124", "\124\124");
+		
+		local _, itemID, enchantID, gemID1, gemID2, gemID3, gemID4, suffixID, uniqueID, linkLevel, specializationID, upgradeTypeID, instanceDifficultyID, numBonusIDs = strsplit(":", linkString);
+		--local tempString, unknown1, unknown2, unknown3 = strmatch(itemString, "item:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:([-:%d]+):([-%d]-):([-%d]-):([-%d]-)|")
+		--local bonusIDs, upgradeValue;
+		
+		-- if upgradeTypeID and upgradeTypeID ~= "" then
+			-- upgradeValue = tempString:match("[-:%d]+:([-%d]+)")
+			-- bonusIDs = {strsplit(":", tempString:match("([-:%d]+):"))}
+		-- else
+			-- bonusIDs = {strsplit(":", tempString)}
+		-- end
+				
+		--print(itemName, " numBonusIds:", numBonusIds);
+	end
+
 end
 
 function AddTokens()
