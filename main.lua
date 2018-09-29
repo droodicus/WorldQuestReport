@@ -1,7 +1,76 @@
---http://www.wowhead.com/guide=1949/wow-addon-writing-guide-part-one-how-to-make-your-first-addon
-
---API REREFENCE: http://wowprogramming.com/docs/api_categories.html
 --USEFUL COMMAND: /dump C_TaskQuest.GetQuestsForPlayerByMapID(862)
+
+
+SLASH_WORLDQUESTREPORT1 = '/wqr';
+function SlashCmdList.WORLDQUESTREPORT(msg, editBox)
+    if(msg == 'show') then
+		if(UnitFactionGroup("player") == "Horde") then
+			print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
+			ParseQuests(875);
+			ParseQuests(876);
+			CheckContracts();
+			AddTokens();
+			OutputHordeRepSums();
+			print("Num WQs active :", numWQs);
+			OutputGoldTotal();
+			OutputCurrencyTotals();
+		--Alliance
+		elseif(UnitFactionGroup("player") == "Alliance") then
+			print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
+			ParseQuests(875);
+			ParseQuests(876);
+			CheckContracts();
+			AddTokens();
+			OutputAllianceRepSums();
+			print("Num WQs active :", numWQs);
+			OutputGoldTotal();
+			OutputCurrencyTotals();
+		end
+		ResetVariables();
+	end
+end
+
+function ResetVariables()
+	numWQs = 0;
+	--Counters for each zone
+	zQuests = 0;
+	vQuests = 0;
+	nQuests = 0;
+	dQuests = 0;
+	sQuests = 0;
+	tQuests = 0;
+	contract_rep = 0;
+	magni = 0;
+	--initialization of currency total variables
+	totalAzerite = 0;
+	totalMoney = 0;
+	totalWarResources = 0;
+
+	--Horde Rep total initialization and ID indices 
+	CoA = 0; --Champions of Azeroth rep (ID = 2164)
+	tokenCoA = 0;
+	TE = 0;  --Talanji's Expedition rep (ID = 2156)
+	tokenTE = 0;
+	HB = 0;  --The Honorbound rep 		(ID = 2157)
+	tokenHB = 0;
+	TS = 0;  --Tortollan Seekers rep 	(ID = 2163)
+	tokenTS = 0;
+	Vol = 0; --Voldunai rep				(ID = 2158)
+	tokenVol = 0;
+	ZE = 0;  --Zandalari Empire rep 	(ID = 2103)
+	tokenZE = 0;
+			
+	--Alliance Rep total initialization and ID indices 
+	OoE = 0; --Order of Embers rep	    (ID = 2161)
+	tokenOoE = 0;
+	SL = 0; --7th Legion rep 			(ID = 2159)
+	tokenSL = 0;
+	PA = 0; --Proudmoore Admiralty rep  (ID = 2160)
+	tokenPA = 0;
+	SW = 0; --Storm's Wake rep 			(ID = 2162)		
+	tokenSW = 0;
+end
+
 
 --***INITIALIZATION************************************************************************
 local f = CreateFrame("Frame")
@@ -61,30 +130,32 @@ f:SetScript("OnEvent", function(f, event)
 			DRUSTVAR = 896
 			TIRAGARDE_SOUND = 895
 			]]
+			--[[
 			--CheckAzerite(52169);
 			--Horde
-			if(UnitFactionGroup("player") == "Horde") then
-				print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
-				ParseQuests(875);
-				ParseQuests(876);
-				CheckContracts();
-				AddTokens();
-				OutputHordeRepSums();
-				print("Num WQs active :", numWQs);
-				OutputGoldTotal();
-				OutputCurrencyTotals();
-			--Alliance
-			elseif(UnitFactionGroup("player") == "Alliance") then
-				print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
-				ParseQuests(875);
-				ParseQuests(876);
-				CheckContracts();
-				AddTokens();
-				OutputAllianceRepSums();
-				print("Num WQs active :", numWQs);
-				OutputGoldTotal();
-				OutputCurrencyTotals();
-			end
+			-- if(UnitFactionGroup("player") == "Horde") then
+				-- print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
+				-- ParseQuests(875);
+				-- ParseQuests(876);
+				-- CheckContracts();
+				-- AddTokens();
+				-- OutputHordeRepSums();
+				-- print("Num WQs active :", numWQs);
+				-- OutputGoldTotal();
+				-- OutputCurrencyTotals();
+			-- --Alliance
+			-- elseif(UnitFactionGroup("player") == "Alliance") then
+				-- print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
+				-- ParseQuests(875);
+				-- ParseQuests(876);
+				-- CheckContracts();
+				-- AddTokens();
+				-- OutputAllianceRepSums();
+				-- print("Num WQs active :", numWQs);
+				-- OutputGoldTotal();
+				-- OutputCurrencyTotals();
+			-- end
+			]]
 		else
 			print("Level up scrub");
 		end
@@ -92,19 +163,8 @@ f:SetScript("OnEvent", function(f, event)
 end)
 
 
-print("WQ Report active!");
+print("WQ Report active! Type '/wqr show' to display.");
 
---[[ MAP ID'S:
-			AZEROTH = 947
-			ZANDALAR = 875
-			VOLDUN = 864
-			NAZMIR = 863
-			ZULDAZAR = 862
-			KUL_TIRAS = 876
-			STORMSONG_VALLEY = 942
-			DRUSTVAR = 896
-			TIRAGARDE_SOUND = 895
-			]]
 function ParseQuests(mID)
 	mapname = C_Map.GetMapInfo(mID).name;
 	print("Processing map: ", mapname, " MapID: ", mID);
