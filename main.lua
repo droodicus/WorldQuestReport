@@ -1,9 +1,17 @@
 --USEFUL COMMAND: /dump C_TaskQuest.GetQuestsForPlayerByMapID(862)
 
+local frame = CreateFrame("Frame")
+local timer = 0
+local queryAttempts = 0
 
 SLASH_WORLDQUESTREPORT1 = '/wqr';
 function SlashCmdList.WORLDQUESTREPORT(msg, editBox)
     if(msg == 'show') then
+		-- print("HH LEE GOLD:", GetQuestLogRewardMoney(50846));
+		-- temp = GetNumQuestLogRewardCurrencies(51043);
+		-- print("Literally the first thing I'm doing:", temp);
+	
+	
 		if(UnitFactionGroup("player") == "Horde") then
 			print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
 			ParseQuests(875);
@@ -11,9 +19,9 @@ function SlashCmdList.WORLDQUESTREPORT(msg, editBox)
 			CheckContracts();
 			AddTokens();
 			OutputHordeRepSums();
-			print("Num WQs active :", numWQs);
 			OutputGoldTotal();
 			OutputCurrencyTotals();
+			print("Num WQs active :", numWQs);
 		--Alliance
 		elseif(UnitFactionGroup("player") == "Alliance") then
 			print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
@@ -26,12 +34,29 @@ function SlashCmdList.WORLDQUESTREPORT(msg, editBox)
 			OutputGoldTotal();
 			OutputCurrencyTotals();
 		end
-		ResetVariables();
+	elseif(msg == 'reps' or msg == 'r') then
+		print("SHOWING REPS");
+	elseif(msg == 'gold' or msg == 'g') then
+		print("SHOWING GOLD");
+		OnlyGold(875);
+		OnlyGold(876);
+		OutputGoldTotal();
+	elseif(msg == 'currencies' or msg == 'c') then
+		print("SHOWING CURRENCIES");
+		OnlyCurrencies(875);
+		OnlyCurrencies(876);
+		OutputCurrencyTotals();
+	elseif(msg == 'help' or msg == 'h') then
+		print("SHOWING LIST OF COMMANDS");
 	end
+	
+	ResetVariables();
 end
+
 
 function ResetVariables()
 	numWQs = 0;
+	current_QID = 0;
 	--Counters for each zone
 	zQuests = 0;
 	vQuests = 0;
@@ -81,6 +106,7 @@ f:SetScript("OnEvent", function(f, event)
 		if(UnitLevel("player") == 120) then
 			--Counter for number of World Quests currently active
 			numWQs = 0;
+			current_QID = 0;
 			--Counters for each zone
 			zQuests = 0;
 			vQuests = 0;
@@ -94,6 +120,8 @@ f:SetScript("OnEvent", function(f, event)
 			totalAzerite = 0;
 			totalMoney = 0;
 			totalWarResources = 0;
+			
+			CurrenciesDone = false;
 
 			--Horde Rep total initialization and ID indices 
 			CoA = 0; --Champions of Azeroth rep (ID = 2164)
@@ -118,7 +146,7 @@ f:SetScript("OnEvent", function(f, event)
 			tokenPA = 0;
 			SW = 0; --Storm's Wake rep 			(ID = 2162)		
 			tokenSW = 0;
-						
+			
 			--[[ MAP ID'S:
 			AZEROTH = 947
 			ZANDALAR = 875
@@ -163,34 +191,30 @@ f:SetScript("OnEvent", function(f, event)
 end)
 
 
-print("WQ Report active! Type '/wqr show' to display.");
+print("WQ Report active! Type '/wqr show' to display all info or '/wqr help' to show a list of commands.");
 
 function ParseQuests(mID)
 	mapname = C_Map.GetMapInfo(mID).name;
-	print("Processing map: ", mapname, " MapID: ", mID);
+	--print("Processing map: ", mapname, " MapID: ", mID);
 	mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mID);
-
-
+	
 	if mapQuests then
 		for i, info in ipairs(mapQuests) do
-				if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
+				current_QID = info.questId;
+				if HaveQuestData(current_QID) and QuestUtils_IsQuestWorldQuest(current_QID) then
 					--print(GetQuestLink(info.questId), ", questID: ", info.questId, ", mapID: ", info.mapID);
-					GetQuestReps(info.questId, info.mapID);
-					CheckMoney(info.questId);
-					CheckCurrencies(info.questId);
+					GetQuestReps(current_QID, info.mapID);
+					CheckMoney(current_QID);
+					--frame:SetScript("OnUpdate", frame.GetGold);
+					CheckCurrencies(current_QID);
 					--CheckItemReward(info.questId);
 				end
 		end
 	end
 	contract_rep = numWQs * 10;
-	--print("ZULDAZAR QUEST COUNT: ", zQuests);
-	--print("VOLDUN QUEST COUNT: ", vQuests);
-	--print("NAZMIR QUEST COUNT: ", nQuests);
-	--print("DRUSTVAR QUEST COUNT: ", dQuests);
-	--print("STORMSONG QUEST COUNT: ", sQuests);
-	--print("TIRAGARDE QUEST COUNT: ", tQuests);
+	CurrenciesDone = true;
+	--print("DONE PARSING MAP");
 end
-
 
 local ZuldazarQuests = {
 [52923]={2103, 2159},		  --Add More to the Collection -- Gives 75 ZE  or 7th L rep
@@ -267,6 +291,7 @@ local ZuldazarQuests = {
 [49413]={2103, 2159},		  --Scamps with Scrolls -- Gives 75 ZE  or 7th L rep
 [51822]={2159},		  		  --Scrolls and Scales -- gives 75 7th L rep (Alliance only)
 [50581]={2103},		 		  --Scrolls and Scales -- gives 75 ZE rep (Horde only)
+[54166]={2103},		 		  --Set Sail -- gives 75 ZE rep (Horde only)
 [51630]={2103, 2159, 2163},   --Shell Game -- gives 175 TS rep and 75 ZE or 7th L rep - Southwestern Zuldazar
 [50737]={2159},		 		  --Silence the Speakers -- gives 75 7th L rep (Alliance only)
 [50858]={2159},		  		  --Sky Queen -- gives 75 7th L rep (Alliance only)
@@ -420,6 +445,7 @@ local VoldunQuests = {
 [51561]={2158},		 		  --Spider Scorching -- gives 75 Vol rep (Horde only) ***APPEARS TO BE A DUPLICATE
 [51120]={2158, 2159},		  --Stef "Marrow" Quin -- gives 75 Vol or 7th L rep
 [51831]={2158, 2159},		  --Swift Strike -- gives 75 Vol or 7th L rep
+[51379]={2158, 2159},		  --Temple of Sethraliss: Navigating Currents -- gives 75 Vol or 7th L rep
 [52059]={2159},		 		  --Thar She Sinks -- gives 75 7th L rep (Alliance only)
 [51997]={2158},		 		  --Thar She Sinks -- gives 75 Vol rep (Horde only)
 [51957]={2158},		 		  --The Wrath of Vorrik -- gives 75 Vol rep (Horde only)
@@ -524,6 +550,7 @@ local NazmirQuests = {
 [50513]={2156, 2159},		  --Tainted Guardian -- gives 75 TE or 7th L rep
 [50474]={2156},		 		  --The Other Side -- gives 75 TE rep (Horde only)
 [50529]={2156},		 		  --The Spirits Within -- gives 75 TE rep (Horde only)
+[51856]={2156, 2159},		  --The Underrot: Rotmaw -- gives 75 TE or 7th L rep
 [50514]={2156, 2159},		  --Totem Maker Jash'ga -- gives 75 TE or 7th L rep
 [50577]={2156},		 		  --Unaccounted For -- gives 75 TE rep (Horde only)
 [51176]={2159},		 		  --Unaccounted For -- gives 75 7th L rep (Alliance only)
@@ -1020,26 +1047,90 @@ local TiragardeSoundQuests = {
 [50984]={2160}		  		  --Work Order: Winter's Kiss -- gives 75 PA rep (Alliance only)
 }
 
-function CheckMoney(questID)
-	questMoney = GetQuestLogRewardMoney(questID);
-	if(questMoney ~= 0) then
-		totalMoney = totalMoney + questMoney;
+
+
+function OnlyGold(mID)
+	mapname = C_Map.GetMapInfo(mID).name;
+	--print("Processing map: ", mapname, " MapID: ", mID);
+	mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mID);
+	
+	if mapQuests then
+		for i, info in ipairs(mapQuests) do
+				if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
+					CheckMoney(info.questId);
+				end
+		end
 	end
 end
 
-function OutputGoldTotal()	
+function CheckMoney(questID)
+	--print("SPAM:", GetQuestLink(questID));
+	questMoney = GetQuestLogRewardMoney(questID);
+	if(questMoney ~= 0) then
+		totalMoney = totalMoney + questMoney;
+		--print("ADDING MANNIES, NEW TOTAL:", totalMoney);
+	end
+end
+
+function frame:GetGold(elapsed)
+	timer = timer + elapsed
+		
+	if (timer >= 0.1) then -- 0.1 sec delay
+		timer = 0
+		rewardMoney = GetQuestLogRewardMoney(current_QID)
+		print("ATTEMPT");
+		if(rewardMoney > 0)	then
+			print("QUEST DOES GIVE MONEY");
+		end
+		queryAttempts = queryAttempts + 1;
+	end
+	
+	if(rewardMoney > 0 or queryAttempts > 10) then
+		print("REWARD MONEY:", rewardMoney);
+		print("NUM ATTEMPTS:", queryAttempts);
+		frame:SetScript("OnUpdate", nil);
+		if(rewardMoney > 0)	then
+			print("QUEST GIVES:", rewardMoney);
+		elseif(queryAttempts > 10) then
+			print("Done checking, no gold found");
+		end
+		print("GET GOLD COMPLETE");
+	end
+	
+end
+
+
+function OutputGoldTotal()
 	--print("Unprocessed money= ", totalMoney);
 	gold = totalMoney/10000;
 	--print("Gold: ", gold);
 	gold = math.floor(gold);
 	silver = (totalMoney - (gold * 10000)) / 100;
-	print("TOTAL:", gold, "gold,", silver, "silver");
+	print(gold, "gold,", silver, "silver available from WQs");
+end
+
+
+
+function OnlyCurrencies(mID)
+	mapname = C_Map.GetMapInfo(mID).name;
+	--print("Processing map: ", mapname, " MapID: ", mID);
+	mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mID);
+	
+	if mapQuests then
+		for i, info in ipairs(mapQuests) do
+				if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
+					CheckCurrencies(info.questId);
+				end
+		end
+	end
 end
 
 function CheckCurrencies(questID)
 	local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
+
 	if numQuestCurrencies > 0 then
 		for currencyNum = 1, numQuestCurrencies do 
+			
 			local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(currencyNum, questID)
 			--Azerite currency ID = 1553
 			if currencyID == 1553 then
@@ -1088,7 +1179,19 @@ function CheckCurrencies(questID)
 			end
 		end
 	end
+	CurrenciesDone = true;
 end
+
+function OutputCurrencyTotals()
+	if(CurrenciesDone == true) then
+		print(totalAzerite, "Azerite available from WQs");
+		print(totalWarResources, "War Resources available from WQs");
+	else
+		print("CURRENCIES NOT COMPLETED IN TIME");
+	end
+end
+
+
 
 function CheckItemReward(questID)
 	local numQuestRewards = GetNumQuestLogRewards(questID)
@@ -1116,6 +1219,7 @@ function CheckItemReward(questID)
 	end
 
 end
+
 
 function AddTokens()
 	if(UnitFactionGroup("player") == "Horde") then
@@ -1156,10 +1260,6 @@ function AddTokens()
 	end
 end
 
-function OutputCurrencyTotals()
-	print("TOTAL AVAILABLE WQ AZERITE:", totalAzerite);
-	print("TOTAL AVAILABLE WQ WAR RESOURCES:", totalWarResources);
-end
 
 
 function GetQuestReps(qID, mID)
@@ -1387,23 +1487,23 @@ function OutputHordeRepSums()
 	end
 	if(TS > 0) then
 		if(tokenTS ~= 0) then
-			print("|cFF31702A Tortollan Seekers potential rep: ", TS, "(", tokenTS, "from tokens)");
+			print("|cFF00FC04 Tortollan Seekers potential rep: ", TS, "(", tokenTS, "from tokens)");
 		else
-			print("|cFF31702A Tortollan Seekers potential rep: ", TS);
+			print("|cFF00FC04 Tortollan Seekers potential rep: ", TS);
 		end
 	end
 	if(Vol > 0) then
 		if(tokenVol ~= 0) then
-			print("|cFF9B8204 Voldunai potential rep: ", Vol, "(", tokenVol, "from tokens)");
+			print("|cFFF8FC00 Voldunai potential rep: ", Vol, "(", tokenVol, "from tokens)");
 		else
-			print("|cFF9B8204 Voldunai potential rep: ", Vol);
+			print("|cFFF8FC00 Voldunai potential rep: ", Vol);
 		end
 	end
 	if(ZE > 0) then
 		if(tokenZE ~= 0) then
-			print("|cFF16027A Zandalari Empire potential rep: ", ZE, "(", tokenZE, "from tokens)");
+			print("|cFFC007FB Zandalari Empire potential rep: ", ZE, "(", tokenZE, "from tokens)");
 		else
-			print("|cFF16027A Zandalari Empire potential rep: ", ZE);
+			print("|cFFC007FB Zandalari Empire potential rep: ", ZE);
 		end
 	end
 end
@@ -1432,9 +1532,9 @@ function OutputAllianceRepSums()
 	end
 	if(TS > 0) then
 		if(tokenTS ~= 0) then
-			print("|cFF31702A Tortollan Seekers potential rep: ", TS, "(", tokenTS, "from tokens)");
+			print("|cFF00FC04 Tortollan Seekers potential rep: ", TS, "(", tokenTS, "from tokens)");
 		else
-			print("|cFF31702A Tortollan Seekers potential rep: ", TS);
+			print("|cFF00FC04 Tortollan Seekers potential rep: ", TS);
 		end
 	end
 	if(PA > 0) then
@@ -1456,29 +1556,29 @@ end
 function CheckContracts()
 --Horde + Neutral contracts
 	if(AuraUtil.FindAuraByName("Contract: Zandalari Empire", "player") ~= nil) then
-		print("Zandloople Empurr potential contract rep: ", contract_rep);
+		print("Zandalari Empire potential contract rep: ", contract_rep);
 		ZE = ZE + contract_rep;
 	elseif(AuraUtil.FindAuraByName("Contract: Voldunai", "player") ~= nil) then
-		print("Voldunguy potential contract rep: ", contract_rep);
+		print("Voldunai potential contract rep: ", contract_rep);
 		Vol = Vol + contract_rep;
 	elseif(AuraUtil.FindAuraByName("Contract: Tortollan Seekers", "player") ~= nil) then
-		print("Turtles that made it to the water potential contract rep: ", contract_rep);
+		print("Tortollan Seekers potential contract rep: ", contract_rep);
 		TS = TS + contract_rep;
 	elseif(AuraUtil.FindAuraByName("Contract: Talanji's Expedition", "player") ~= nil) then
-		print("Team Talanji potential contract rep: ", contract_rep);
+		print("Talanji's Expedition potential contract rep: ", contract_rep);
 		TE = TE + contract_rep;
 	elseif(AuraUtil.FindAuraByName("Contract: Champions of Azeroth", "player") ~= nil) then
-		print("Magni's Magnanimous Minutemen potential contract rep: ", contract_rep);
+		print("Champions of Azeroth potential contract rep: ", contract_rep);
 		CoA = CoA + contract_rep;
 --Alliance contracts		
 	elseif(AuraUtil.FindAuraByName("Contract: Proudmoore Admiralty", "player") ~= nil) then
-		print("Making Proudmoores More Proud potential contract rep: ", contract_rep);
+		print("Proudmoore Admiralty potential contract rep: ", contract_rep);
 		PA = PA + contract_rep;
 	elseif(AuraUtil.FindAuraByName("Contract: Order of Embers", "player") ~= nil) then
-		print("Order of Burning Stuff potential contract rep: ", contract_rep);
+		print("Order of Embers potential contract rep: ", contract_rep);
 		OoE = OoE + contract_rep;
 	elseif(AuraUtil.FindAuraByName("Contract: Storm's Wake", "player") ~= nil) then
-		print("Anti-Hentai Patrol potential contract rep: ", contract_rep);
+		print("Storm's Wake potential contract rep: ", contract_rep);
 		SW = SW + contract_rep;
 	else
 		print("NO VALID CONTRACT DETECTED");
