@@ -1,53 +1,71 @@
 --USEFUL COMMAND: /dump C_TaskQuest.GetQuestsForPlayerByMapID(862)
 
-local frame = CreateFrame("Frame")
-local timer = 0
+local frame = CreateFrame("Frame");
+local timer = 0;
 local queryAttempts = 0
+local mapQuests = {}
 
 SLASH_WORLDQUESTREPORT1 = '/wqr';
 function SlashCmdList.WORLDQUESTREPORT(msg, editBox)
+	--check if Warmode is active on the character
+	if(AuraUtil.FindAuraByName("Enlisted", "player") ~= nil) then
+		WM = true
+	else
+		WM = false
+	end
+
     if(msg == 'show') then
 		-- print("HH LEE GOLD:", GetQuestLogRewardMoney(50846));
 		-- temp = GetNumQuestLogRewardCurrencies(51043);
 		-- print("Literally the first thing I'm doing:", temp);
 	
-	
 		if(UnitFactionGroup("player") == "Horde") then
 			print("|cFFFF0000 CHARACTER CONFIRMED HORDE, ZUG ZUG");
 			ParseQuests(875);
 			ParseQuests(876);
+			ParseQuests(1355);
 			CheckContracts();
 			AddTokens();
 			OutputHordeRepSums();
 			OutputGoldTotal();
 			OutputCurrencyTotals();
-			print("Num WQs active :", numWQs);
+			--print("Num WQs active :", numWQs);
 		--Alliance
 		elseif(UnitFactionGroup("player") == "Alliance") then
 			print("|cFF1f81f2 CHARACTER CONFIRMED ALLIANCE ....ew");
 			ParseQuests(875);
 			ParseQuests(876);
+			ParseQuests(1355);
 			CheckContracts();
 			AddTokens();
 			OutputAllianceRepSums();
-			print("Num WQs active :", numWQs);
 			OutputGoldTotal();
 			OutputCurrencyTotals();
+			--print("Num WQs active :", numWQs);
 		end
+	elseif(msg == 'az') then
+		OnlyCurrencies(875);
+		OnlyCurrencies(876);
+		OnlyCurrencies(1355);
+		OutputAzeriteTotal();
 	elseif(msg == 'reps' or msg == 'r') then
 		print("SHOWING REPS");
 	elseif(msg == 'gold' or msg == 'g') then
 		print("SHOWING GOLD");
 		OnlyGold(875);
 		OnlyGold(876);
+		OnlyGold(1355);
 		OutputGoldTotal();
 	elseif(msg == 'currencies' or msg == 'c') then
 		print("SHOWING CURRENCIES");
 		OnlyCurrencies(875);
 		OnlyCurrencies(876);
+		OnlyCurrencies(1355);
 		OutputCurrencyTotals();
 	elseif(msg == 'help' or msg == 'h') then
-		print("SHOWING LIST OF COMMANDS");
+		print("'/wqr show' will display reps, gold, azerite, and war resources");
+		print("'/wqr c' will (eventually) display azerite and war resources (WIP)");
+		print("'/wqr g' will (eventually) display gold (WIP)");
 	end
 	
 	ResetVariables();
@@ -84,6 +102,7 @@ function ResetVariables()
 	tokenVol = 0;
 	ZE = 0;  --Zandalari Empire rep 	(ID = 2103)
 	tokenZE = 0;
+	Uns = 0;
 			
 	--Alliance Rep total initialization and ID indices 
 	OoE = 0; --Order of Embers rep	    (ID = 2161)
@@ -94,15 +113,16 @@ function ResetVariables()
 	tokenPA = 0;
 	SW = 0; --Storm's Wake rep 			(ID = 2162)		
 	tokenSW = 0;
+	Ank = 0;
 end
 
 
 --***INITIALIZATION************************************************************************
 local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:RegisterEvent("PLAYER_LOGIN")
 
 f:SetScript("OnEvent", function(f, event)
-    if event == "PLAYER_ENTERING_WORLD" then
+    if event == "PLAYER_LOGIN" then
 		if(UnitLevel("player") == 120) then
 			--Counter for number of World Quests currently active
 			numWQs = 0;
@@ -120,6 +140,8 @@ f:SetScript("OnEvent", function(f, event)
 			totalAzerite = 0;
 			totalMoney = 0;
 			totalWarResources = 0;
+			--Warmode boolean
+			WM = false;
 			
 			CurrenciesDone = false;
 
@@ -136,6 +158,8 @@ f:SetScript("OnEvent", function(f, event)
 			tokenVol = 0;
 			ZE = 0;  --Zandalari Empire rep 	(ID = 2103)
 			tokenZE = 0;
+			Uns = 0; --Unshackled rep			(ID = 2373)
+			
 			
 			--Alliance Rep total initialization and ID indices 
 			OoE = 0; --Order of Embers rep	    (ID = 2161)
@@ -146,6 +170,7 @@ f:SetScript("OnEvent", function(f, event)
 			tokenPA = 0;
 			SW = 0; --Storm's Wake rep 			(ID = 2162)		
 			tokenSW = 0;
+			Ank = 0; --Ankoan Waveblade rep 	(ID = 2400)
 			
 			--[[ MAP ID'S:
 			AZEROTH = 947
@@ -157,6 +182,7 @@ f:SetScript("OnEvent", function(f, event)
 			STORMSONG_VALLEY = 942
 			DRUSTVAR = 896
 			TIRAGARDE_SOUND = 895
+			NAZJATAR = 1355 (tentative)
 			]]
 			--[[
 			--CheckAzerite(52169);
@@ -192,11 +218,17 @@ end)
 
 
 print("WQ Report active! Type '/wqr show' to display all info or '/wqr help' to show a list of commands.");
+print("If gold, azerite, or war resources output looks off, input '/wqr show' again (highly suggest just using a macro).");
 
 function ParseQuests(mID)
+	if mID == 1355 then
+		print("Processing map: ", mapname, " MapID: ", mID);
+	end
+	--end
 	mapname = C_Map.GetMapInfo(mID).name;
 	--print("Processing map: ", mapname, " MapID: ", mID);
 	mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mID);
+
 	
 	if mapQuests then
 		for i, info in ipairs(mapQuests) do
@@ -1047,6 +1079,113 @@ local TiragardeSoundQuests = {
 [50984]={2160}		  		  --Work Order: Winter's Kiss -- gives 75 PA rep (Alliance only)
 }
 
+local NazjatarQuests = {
+--Ankoan Waveblade (Alliance) profession turn-ins
+[56795]={2400},				  --Work Order: Abyssal-Fried Rissole -- gives 75 Ankoan rep (Alliance Only)
+[56794]={2400},				  --Work Order: Baked Port Tato -- gives 75 Ankoan rep (Alliance Only)
+[56797]={2400},				  --Work Order: Bil'Tong -- gives 75 Ankoan rep (Alliance Only)
+[56796]={2400},				  --Work Order: Fragrant Kakavia -- gives 75 Ankoan rep (Alliance Only)
+[56793]={2400},				  --Work Order: Mech-Dowel's "Big Mech" -- gives 75 Ankoan rep (Alliance Only)
+[56826]={2400},				  --Work Order: Enchant Weapon - Force Multiplier -- gives 75 Ankoan rep (Alliance Only)
+[56824]={2400},				  --Work Order: Enchant Weapon - Machinist's Brilliance -- gives 75 Ankoan rep (Alliance Only)
+[56827]={2400},				  --Work Order: Enchant Weapon - Naga Hide -- gives 75 Ankoan rep (Alliance Only)
+[56825]={2400},				  --Work Order: Enchant Weapon - Oceanic Restoration -- gives 75 Ankoan rep (Alliance Only)
+[56767]={2400},				  --Work Order: Greater Flask of Endless Fathoms -- gives 75 Ankoan rep (Alliance Only)
+[56570]={2400},				  --Work Order: Greater Flask of the Currents -- gives 75 Ankoan rep (Alliance Only)
+[56768]={2400},				  --Work Order: Greater Flask of the Undertow -- gives 75 Ankoan rep (Alliance Only)
+[56769]={2400},				  --Work Order: Greater Flask of the Vast Horizon -- gives 75 Ankoan rep (Alliance Only)
+--Unshackled (Horde) profession turn-ins
+[56800]={2373},				  --Work Order: Abyssal-Fried Rissole -- gives 75 Unshackled rep (Horde Only)
+[56801]={2373},				  --Work Order: Baked Port Tato -- gives 75 Unshackled rep (Horde Only)
+[56798]={2373},				  --Work Order: Bil'Tong -- gives 75 Unshackled rep (Horde Only)
+[56799]={2373},				  --Work Order: Fragrant Kakavia -- gives 75 Unshackled rep (Horde Only)
+[56802]={2373},				  --Work Order: Mech-Dowel's "Big Mech" -- gives 75 Unshackled rep (Horde Only)
+[56820]={2373},				  --Work Order: Enchant Weapon - Force Multiplier -- gives 75 Unshackled rep (Horde Only)
+[56821]={2373},				  --Work Order: Enchant Weapon - Machinist's Brilliance -- gives 75 Unshackled rep (Horde Only)
+[56818]={2373},				  --Work Order: Enchant Weapon - Naga Hide -- gives 75 Unshackled rep (Horde Only)
+[56819]={2373},				  --Work Order: Enchant Weapon - Oceanic Restoration -- gives 75 Unshackled rep (Horde Only)
+[56772]={2373},				  --Work Order: Greater Flask of Endless Fathoms -- gives 75 Unshackled rep (Horde Only)
+[56770]={2373},				  --Work Order: Greater Flask of the Currents -- gives 75 Unshackled rep (Horde Only)
+[56774]={2373},				  --Work Order: Greater Flask of the Undertow -- gives 75 Unshackled rep (Horde Only)
+[56773]={2373},				  --Work Order: Greater Flask of the Vast Horizon -- gives 75 Unshackled rep (Horde Only)
+--World Bosses
+[56057]={2373, 2400},		  --The Soulbinder -- gives 75 Unshackled or Ankoan rep
+[56056]={2373, 2400},		  --Terror of the Depths -- gives 75 Unshackled or Ankoan rep
+--"Champion" World Quests
+[55888]={2373, 2400},		  --Champion Qalina, Spear of Ice -- gives 75 Unshackled or Ankoan rep 
+[55889]={2373, 2400},		  --Champion Kyx'zhul, the Deepspeaker -- gives 75 Unshackled or Ankoan rep 
+[55892]={2373, 2400},		  --Champion Eldanar, Shield of Her Glory -- gives 75 Unshackled or Ankoan rep 
+[55890]={2373, 2400},		  --Champion Vyz'olgo the Mind-Taker -- gives 75 Unshackled or Ankoan rep 
+[55887]={2373, 2400},		  --Champion Alzana, Arrow of Thunder -- gives 75 Unshackled or Ankoan rep 
+[55891]={2373, 2400},		  --Champion Aldrantiss, Defender of Her Kingdom -- gives 75 Unshackled or Ankoan rep 
+--Leylocked Chest World Quests
+[56023]={2373, 2400},		  --Leylocked Chest -- gives 75 Unshackled or Ankoan rep
+[56024]={2373, 2400},		  --Leylocked Chest -- gives 75 Unshackled or Ankoan rep
+[56025]={2373, 2400},		  --Leylocked Chest -- gives 75 Unshackled or Ankoan rep
+--Runelocked Chest World Quests
+[56022]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56013]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56003]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56021]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56017]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56011]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56007]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56006]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56008]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56009]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56016]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56012]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56015]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56010]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56019]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56020]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56018]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+[56014]={2373, 2400},		  --Runelocked Chest -- gives 75 Unshackled or Ankoan rep
+--Battle Pet World Quests
+[56382]={2373, 2400},		  --Chomp -- gives 75 Unshackled or Ankoan rep
+[56386]={2373, 2400},		  --Elderspawn of Nalaada -- gives 75 Unshackled or Ankoan rep
+[56391]={2373, 2400},		  --Frenzied Knifefang -- gives 75 Unshackled or Ankoan rep
+[56392]={2373, 2400},		  --Giant Opaline Conch -- gives 75 Unshackled or Ankoan rep
+[56389]={2373, 2400},		  --Kelpstone -- gives 75 Unshackled or Ankoan rep
+[56388]={2373, 2400},		  --Mindshackle -- gives 75 Unshackled or Ankoan rep
+[56385]={2373, 2400},		  --Pearlhusk Crawler -- gives 75 Unshackled or Ankoan rep
+[56381]={2373, 2400},		  --Prince Wiggletail -- gives 75 Unshackled or Ankoan rep
+[56387]={2373, 2400},		  --Ravenous Scalespawn -- gives 75 Unshackled or Ankoan rep
+[56384]={2373, 2400},		  --Shadowspike Lurker -- gives 75 Unshackled or Ankoan rep
+[56383]={2373, 2400},		  --Silence -- gives 75 Unshackled or Ankoan rep
+[56390]={2373, 2400},		  --Voltgorger -- gives 75 Unshackled or Ankoan rep
+--"Neutral" World Quests
+[55900]={2373, 2400},		  --Kassar, Wielder of Dark Blades -- gives 75 Unshackled or Ankoan rep
+[55896]={2373, 2400},		  --Undana, Chilling Assassin -- gives 75 Unshackled or Ankoan rep
+[55893]={2373, 2400},		  --Azanz, the Slitherblade -- gives 75 Unshackled or Ankoan rep
+[55899]={2373, 2400},		  --Starseeker of the Shirakess -- gives 75 Unshackled or Ankoan rep
+[55886]={2373, 2400},		  --The Zanj'ir Brutalizer -- gives 75 Unshackled or Ankoan rep
+[55898]={2373, 2400},		  --Tempest-Speaker Shalan'ali -- gives 75 Unshackled or Ankoan rep
+[55894]={2373, 2400},		  --Zoko, Her Iron Defender -- gives 75 Unshackled or Ankoan rep
+[55895]={2373, 2400},		  --Frozen Winds of Zhiela -- gives 75 Unshackled or Ankoan rep
+[55897]={2373, 2400},		  --Szun, Breaker of Slaves -- gives 75 Unshackled or Ankoan rep
+[56078]={2373, 2400},		  --Time to Krill -- gives 75 Unshackled or Ankoan rep
+[55997]={2373, 2400},		  --Hungry Hungry Hydras -- gives 75 Unshackled or Ankoan rep
+[55982]={2373, 2400},		  --The Lords of Water -- gives 75 Unshackled or Ankoan rep
+[57353]={2373, 2400},		  --Deepcoil Cleansing -- gives 75 Unshackled or Ankoan rep
+[55973]={2373, 2400},		  --Deepcoil Experiments -- gives 75 Unshackled or Ankoan rep
+[56048]={2373, 2400},		  --The Drowned Oracles -- gives 75 Unshackled or Ankoan rep
+[56121]={2373, 2400},		  --Jumping Jellies -- gives 75 Unshackled or Ankoan rep
+[57330]={2373, 2400},		  --Time for Revenge -- gives 75 Unshackled or Ankoan rep
+[57354]={2373, 2400},		  --Overdue -- gives 75 Unshackled or Ankoan rep
+[57333]={2373, 2400},		  --Terrace Terrors -- gives 75 Unshackled or Ankoan rep
+[57334]={2373, 2400},		  --Cave of Murlocs -- gives 75 Unshackled or Ankoan rep
+[56032]={2373, 2400},		  --Dirty Dozen -- gives 75 Unshackled or Ankoan rep
+[56041]={2373, 2400},		  --Give 'Em Shell -- gives 75 Unshackled or Ankoan rep
+[56036]={2373, 2400},		  --A Steamy Situation -- gives 75 Unshackled or Ankoan rep
+[57336]={2373, 2400},		  --Putting the Past to Rest -- gives 75 Unshackled or Ankoan rep
+[57340]={2373, 2400},		  --Fathrom Ray Feast -- gives 75 Unshackled or Ankoan rep
+[57335]={2373, 2400},		  --Murloc Mayhem -- gives 75 Unshackled or Ankoan rep
+[57338]={2373, 2400},		  --Depopulation Effort -- gives 75 Unshackled or Ankoan rep
+[55884]={2373, 2400},		  --Infestation of Madness -- gives 75 Unshackled or Ankoan rep
+[55970]={2373, 2400},		  --Attrition -- gives 75 Unshackled or Ankoan rep
+[57331]={2373, 2400}		  --Salvage Operations -- gives 75 Unshackled or Ankoan rep
+}
 
 
 function OnlyGold(mID)
@@ -1072,6 +1211,7 @@ function CheckMoney(questID)
 	end
 end
 
+--[[
 function frame:GetGold(elapsed)
 	timer = timer + elapsed
 		
@@ -1098,14 +1238,22 @@ function frame:GetGold(elapsed)
 	end
 	
 end
-
+]]
 
 function OutputGoldTotal()
 	--print("Unprocessed money= ", totalMoney);
+	
+	if(WM == true) then
+		totalMoney = totalMoney * 1.1;
+	end
+	
 	gold = totalMoney/10000;
 	--print("Gold: ", gold);
 	gold = math.floor(gold);
 	silver = (totalMoney - (gold * 10000)) / 100;
+	silver = math.floor(silver);
+	
+	
 	print(gold, "gold,", silver, "silver available from WQs");
 end
 
@@ -1184,8 +1332,28 @@ end
 
 function OutputCurrencyTotals()
 	if(CurrenciesDone == true) then
+		if(WM == true) then
+			totalAzerite = totalAzerite * 1.1;
+			totalWarResources = totalWarResources * 1.1;
+		end
+		totalAzerite = math.floor(totalAzerite);
+		totalWarResources = math.floor(totalWarResources);
+		
 		print(totalAzerite, "Azerite available from WQs");
 		print(totalWarResources, "War Resources available from WQs");
+	else
+		print("CURRENCIES NOT COMPLETED IN TIME");
+	end
+end
+
+function OutputAzeriteTotal()
+	if(CurrenciesDone == true) then
+		if(WM == true) then
+			totalAzerite = totalAzerite * 1.1;
+		end
+		totalAzerite = math.floor(totalAzerite);
+		
+		print(totalAzerite, "Azerite available from WQs");
 	else
 		print("CURRENCIES NOT COMPLETED IN TIME");
 	end
@@ -1341,6 +1509,18 @@ function GetQuestReps(qID, mID)
 					tQuests = tQuests + 1;
 				end
 			end
+		elseif(mID == 1355) then	--Nazjatar
+			for q, reps in pairs(NazjatarQuests) do
+				if(q == qID) then
+					if(type(reps) == "table") then
+						for k, v in pairs(reps) do
+							AddHordeRepToSum(v);
+						end
+					end
+					numWQs = numWQs + 1;
+					tQuests = tQuests + 1;
+				end
+			end
 		end
 	--*******************************ALLIANCE SIDE************************************
 	elseif(UnitFactionGroup("player") == "Alliance") then
@@ -1439,6 +1619,8 @@ function AddHordeRepToSum(re)
 		Vol = Vol + 75;
 	elseif(re == 2103) then
 		ZE = ZE + 75;
+	elseif(re == 2373) then
+		Uns = Uns + 75;
 	--else
 		--print(re, "'s reputation does not apply");
 	end
@@ -1457,6 +1639,8 @@ function AddAllianceRepToSum(re)
 		SW = SW + 75;
 	elseif(re == 2163) then
 		TS = TS + 175;
+	elseif(re == 2400) then
+		Ank = Ank + 75;
 	--else
 		--print(re, "'s reputation does not apply");
 	end
@@ -1506,6 +1690,9 @@ function OutputHordeRepSums()
 			print("|cFFC007FB Zandalari Empire potential rep: ", ZE);
 		end
 	end
+	--if(Uns > 0) then
+	print("|cFFff70f3 Unshaquilled potential rep: ", Uns);
+	--end
 end
 
 function OutputAllianceRepSums()
@@ -1551,6 +1738,9 @@ function OutputAllianceRepSums()
 			print("|cFFE0D500 Storm's Wake potential rep: ", SW);
 		end
 	end
+	if(Ank > 0) then
+			print("|cFFC007FB Ankoan Waveblade potential rep: ", Ank);
+	end
 end
 
 function CheckContracts()
@@ -1570,6 +1760,9 @@ function CheckContracts()
 	elseif(AuraUtil.FindAuraByName("Contract: Champions of Azeroth", "player") ~= nil) then
 		print("Champions of Azeroth potential contract rep: ", contract_rep);
 		CoA = CoA + contract_rep;
+	elseif(AuraUtil.FindAuraByName("Contract: The Honorbound", "player") ~= nil) then
+		print("Honorbound potential contract rep: ", contract_rep);
+		HB = HB + contract_rep;
 --Alliance contracts		
 	elseif(AuraUtil.FindAuraByName("Contract: Proudmoore Admiralty", "player") ~= nil) then
 		print("Proudmoore Admiralty potential contract rep: ", contract_rep);
@@ -1580,6 +1773,9 @@ function CheckContracts()
 	elseif(AuraUtil.FindAuraByName("Contract: Storm's Wake", "player") ~= nil) then
 		print("Storm's Wake potential contract rep: ", contract_rep);
 		SW = SW + contract_rep;
+	elseif(AuraUtil.FindAuraByName("Contract: 7th Legion", "player") ~= nil) then
+		print("7th Legion potential contract rep: ", contract_rep);
+		SL = SL + contract_rep;
 	else
 		print("NO VALID CONTRACT DETECTED");
 	end
